@@ -1,0 +1,10 @@
+.venv
+storage/addressbook.pkl
+
+# Python cache
+__pycache__/
+**/__pycache__/
+
+# IDE config
+.vscode/
+.idea/
