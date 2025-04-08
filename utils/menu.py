@@ -18,35 +18,44 @@ def print_menu():
             "title_style": "bold cyan",
             "column_styles": [("Command", "cyan"), ("Description", "white")],
             "rows": [
-                ("add", "Add a new contact"),
-                ("change", "Edit a contact"),
-                ("phone", "Show contact phone by name"),
-                ("all", "Show all contacts"),
-                ("add-birthday", "Add birthday to contact"),
-                ("show-birthday", "Show birthday for a contact"),
-                ("birthdays", "Show upcoming birthdays"),
+                ("contact-add", "Add a new contact"),
+                ("contact-edit", "Edit a contact"),
+                ("contact-show", "Show contact by name"),
+                ("contact-all", "Show all contacts"),
+                ("contact-search", "Search all contacts by input value"),
+                ("contact-delete", "Delete contact by name"),
+                ("contact-phone", "Show contact phone by name"),
+                ("contact-email", "Show contact email by name"),
+                ("contact-address", "Show contact address by name"),
+                ("contact-add-birthday", "Add birthday to contact"),
+                ("contact-show-birthday", "Show birthday for a contact"),
+                ("contact-birthdays", "Show upcoming birthdays"),
             ]
         },
-        # {
-        #     "title": "Note Management",
-        #     "title_style": "bold red",
-        #     "column_styles": [("Command", "magenta"), ("Description", "white")],
-        #     "rows": [
-        #         ("add note", "Add a new note"),
-        #         ("show all notes", "Show all notes"),
-        #         ("search notes", "Search notes"),
-        #         ("edit note", "Edit a note"),
-        #     ]
-        # },
-        # {
-        #     "title": "Other Commands",
-        #     "title_style": "bold green",
-        #     "column_styles": [("Command", "green"), ("Description", "white")],
-        #     "rows": [
-        #         ("hello", "Greet the assistant"),
-        #         ("exit / close", "Save data and exit the program"),
-        #     ]
-        # }
+        {
+            "title": "Note Management",
+            "title_style": "bold red",
+            "column_styles": [("Command", "magenta"), ("Description", "white")],
+            "rows": [
+                ("note-add", "Add a new note"),
+                ("note-edit", "Edit a note"),
+                ("note-all ", "Show all notes"),
+                ("note-search", "Search notes"),
+                ("note-add-tag", "Add a tag to a note"),
+                ("note-search-by-tag", "Search notes by tag"),
+                ("note-sort-by-tag", "Sort notes by tags"),
+            ]
+        },
+        {
+            "title": "Other Commands",
+            "title_style": "bold green",
+            "column_styles": [("Command", "green"), ("Description", "white")],
+            "rows": [
+                ("hello", "Greet the assistant"),
+                ("help", "Show all commands"),
+                ("exit / close", "Save data and exit the program"),
+            ]
+        }
     ]
 
     for section in menu_sections:

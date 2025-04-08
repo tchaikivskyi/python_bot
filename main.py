@@ -1,45 +1,57 @@
 from utils import collections_fun as fn
-from utils.parse_input import parse_input
-from libs.storage import load_data, save_data
 from utils.menu import print_menu
+from libs.storage import load_data, save_data
+
 
 def main():
     book = load_data()
     print("Welcome to the assistant bot!")
 
     command_map = {
-        "hello": lambda args: "How can I help you?",
-        "add": lambda args: fn.add_contact(args, book),
-        "change": lambda args: fn.change_contact(args, book),
-        "phone": lambda args: fn.show_phone(args, book),
-        "all": lambda args: fn.show_all(args, book),
-        "add-birthday": lambda args: fn.add_birthday(args, book),
-        "show-birthday": lambda args: fn.show_birthday(args, book),
-        "birthdays": lambda args: fn.birthdays(args, book),
+        "hello": lambda *args: print("How can I help you?"),
+        "help": lambda *args: print_menu(),
+        
+        "contact add": lambda args: fn.add_contact(args, book),
+        "contact edit": lambda args: fn.change_contact(args, book),
+        "contact show": lambda args: print('contact show'),
+        "contact all": lambda args: fn.show_all(args, book),
+        "contact search": lambda args: print('contact search'),
+        "contact delete": lambda args: print('contact delete'),
+        "contact phone": lambda args: fn.show_phone(args, book),
+        "contact email": lambda args: print('contact email'),
+        "contact address": lambda args: print('contact address'),
+        "contact add-birthday": lambda args: fn.add_birthday(args, book),
+        "contact show-birthday": lambda args: fn.show_birthday(args, book),
+        "contact birthdays": lambda args: fn.birthdays(args, book),
+        
+        "note add": lambda args: print('note add'),
+        "note edit": lambda args: print('note edit'),
+        "note all": lambda args: print('note all'),
+        "note search": lambda args: print('note search'),
+        "note add-tag": lambda args: print('note add-tag'),
+        "note search-by-tag": lambda args: print('note search-by-tag'),
+        "note sort-by-tag": lambda args: print('note sort-by-tag'),
     }
 
     while True:
-        user_input = input("Enter a command: ")
+        user_input = input("Enter a command: ").strip().lower()
 
-        if not user_input.strip():
+        if not user_input:
             print("Invalid command.")
             continue
 
-        command, *args = parse_input(user_input)
-
-        if command in ("exit", "close"):
-            save_data(book)
-            print("Good bye!")
-            break
-
-        handler = command_map.get(command)
-        if handler:
+        if user_input in command_map:
+            handler = command_map[user_input]
             try:
-                result = handler(args)
-                if result:  # Якщо функція щось повертає
+                result = handler([])  
+                if result:
                     print(result)
             except Exception as e:
                 print(f"Error: {e}")
+        elif user_input in ("exit", "close"):
+            save_data(book)
+            print("Good bye!")
+            break
         else:
             print("Invalid command.")
 
