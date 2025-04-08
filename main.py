@@ -10,27 +10,25 @@ def main():
     command_map = {
         "hello": lambda *args: print("How can I help you?"),
         "help": lambda *args: print_menu(),
-        
-        "contact add": lambda args: fn.add_contact(args, book),
-        "contact edit": lambda args: fn.change_contact(args, book),
-        "contact show": lambda args: print('contact show'),
+        "contact add": lambda args: fn.add_contact(book),
+        "contact edit": lambda args: fn.change_contact(book),
+        "contact show": lambda args: print("contact show"),
         "contact all": lambda args: fn.show_all(args, book),
-        "contact search": lambda args: print('contact search'),
-        "contact delete": lambda args: print('contact delete'),
+        "contact search": lambda args: print("contact search"),
+        "contact delete": lambda args: print("contact delete"),
         "contact phone": lambda args: fn.show_phone(args, book),
-        "contact email": lambda args: print('contact email'),
-        "contact address": lambda args: print('contact address'),
+        "contact email": lambda args: print("contact email"),
+        "contact address": lambda args: print("contact address"),
         "contact add-birthday": lambda args: fn.add_birthday(args, book),
         "contact show-birthday": lambda args: fn.show_birthday(args, book),
         "contact birthdays": lambda args: fn.birthdays(args, book),
-        
-        "note add": lambda args: print('note add'),
-        "note edit": lambda args: print('note edit'),
-        "note all": lambda args: print('note all'),
-        "note search": lambda args: print('note search'),
-        "note add-tag": lambda args: print('note add-tag'),
-        "note search-by-tag": lambda args: print('note search-by-tag'),
-        "note sort-by-tag": lambda args: print('note sort-by-tag'),
+        "note add": lambda args: print("note add"),
+        "note edit": lambda args: print("note edit"),
+        "note all": lambda args: print("note all"),
+        "note search": lambda args: print("note search"),
+        "note add-tag": lambda args: print("note add-tag"),
+        "note search-by-tag": lambda args: print("note search-by-tag"),
+        "note sort-by-tag": lambda args: print("note sort-by-tag"),
     }
 
     while True:
@@ -43,7 +41,7 @@ def main():
         if user_input in command_map:
             handler = command_map[user_input]
             try:
-                result = handler([])  
+                result = handler([])
                 if result:
                     print(result)
             except Exception as e:
@@ -54,6 +52,7 @@ def main():
             break
         else:
             print("Invalid command.")
+
 
 if __name__ == "__main__":
     print_menu()
