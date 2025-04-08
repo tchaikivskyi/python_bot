@@ -19,6 +19,7 @@ def print_menu():
             "column_styles": [("Command", "cyan"), ("Description", "white")],
             "rows": [
                 ("contact-add", "Add a new contact"),
+                ("test", "Test"),
                 ("contact-edit", "Edit a contact"),
                 ("contact-show", "Show contact by name"),
                 ("contact-all", "Show all contacts"),
