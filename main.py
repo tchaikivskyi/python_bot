@@ -1,10 +1,10 @@
-from utils import collections_fun as fn
+from utils import collections_fun as fn, notes_fun as notes_fn
 from utils.menu import print_menu
 from libs.storage import load_data, save_data
 
 
 def main():
-    book = load_data()
+    book, note = load_data().values()
     print("Welcome to the assistant bot!")
 
     command_map = {
@@ -22,9 +22,9 @@ def main():
         "contact add-birthday": lambda args: fn.add_birthday(args, book),
         "contact show-birthday": lambda args: fn.show_birthday(args, book),
         "contact birthdays": lambda args: fn.birthdays(args, book),
-        "note add": lambda args: print("note add"),
+        "note add": lambda args: notes_fn.add_note(note),
         "note edit": lambda args: print("note edit"),
-        "note all": lambda args: print("note all"),
+        "note all": lambda args: notes_fn.show_all(args, note),
         "note search": lambda args: print("note search"),
         "note add-tag": lambda args: print("note add-tag"),
         "note search-by-tag": lambda args: print("note search-by-tag"),
@@ -47,7 +47,7 @@ def main():
             except Exception as e:
                 print(f"Error: {e}")
         elif user_input in ("exit", "close"):
-            save_data(book)
+            save_data({"book": book, "note": note})
             print("Good bye!")
             break
         else:
