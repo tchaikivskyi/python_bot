@@ -1,17 +1,29 @@
 import pickle
 from models.address_book import AddressBook
+from models.notes_book import NotesBook
 
-FILENAME = "storage/addressbook.pkl"
-
-
-def save_data(book, filename=FILENAME):
-    with open(filename, "wb") as f:
-        pickle.dump(book, f)
+FILENAME_CONTACT = "storage/addressbook.pkl"
+FILENAME_NOTE = "storage/notesbook.pkl"
 
 
-def load_data(filename=FILENAME):
+def save_data(data):
+    with open(FILENAME_CONTACT, "wb") as f:
+        pickle.dump(data["book"], f)
+    with open(FILENAME_NOTE, "wb") as f:
+        pickle.dump(data["note"], f)
+
+
+def load_data():
     try:
-        with open(filename, "rb") as f:
-            return pickle.load(f)
+        with open(FILENAME_CONTACT, "rb") as f:
+            book = pickle.load(f)
     except FileNotFoundError:
-        return AddressBook()
+        book = AddressBook()
+
+    try:
+        with open(FILENAME_NOTE, "rb") as f:
+            note = pickle.load(f)
+    except FileNotFoundError:
+        note = NotesBook()
+
+    return {"book": book, "note": note}
