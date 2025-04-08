@@ -142,3 +142,21 @@ def birthdays(_, book: AddressBook):
             for record in upcoming_birthdays
         ]
     )
+
+@input_error
+def contact_search(args, book: AddressBook):
+    pass
+
+
+@input_error
+def contact_show(args, book: AddressBook):
+    if not args:
+        return "Please provide the name of the contact."
+
+    name = args[0]
+    record = book.find(name)
+
+    if not record:
+        return "Contact not found!"
+
+    return str(record)
