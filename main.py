@@ -1,4 +1,4 @@
-from utils import collections_fun as fn, notes_fun as notes_fn
+from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
 from libs.storage import load_data, save_data
 
@@ -12,9 +12,9 @@ def main():
         "help": lambda *args: print_menu(),
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
-        "contact show": lambda args: print("contact show"),
+        "contact show": lambda args: fn.contact_show(args, book),
         "contact all": lambda args: fn.show_all(args, book),
-        "contact search": lambda args: print("contact search"),
+        "contact search": lambda args: fn.contact_search(args, book),
         "contact delete": lambda args: print("contact delete"),
         "contact phone": lambda args: fn.show_phone(args, book),
         "contact email": lambda args: print("contact email"),
@@ -22,9 +22,9 @@ def main():
         "contact add-birthday": lambda args: fn.add_birthday(args, book),
         "contact show-birthday": lambda args: fn.show_birthday(args, book),
         "contact birthdays": lambda args: fn.birthdays(args, book),
-        "note add": lambda args: notes_fn.add_note(note),
+        "note add": lambda args: notes_fun.add_note(note),
         "note edit": lambda args: print("note edit"),
-        "note all": lambda args: notes_fn.show_all(args, note),
+        "note all": lambda args: notes_fun.show_all(args, note),
         "note search": lambda args: print("note search"),
         "note add-tag": lambda args: print("note add-tag"),
         "note search-by-tag": lambda args: print("note search-by-tag"),
@@ -37,11 +37,15 @@ def main():
         if not user_input:
             print("Invalid command.")
             continue
+        
+        parts = user_input.split()
+        cmd = " ".join(parts[:2]) if len(parts) >= 2 and " ".join(parts[:2]) in command_map else parts[0]
+        args = parts[2:] if cmd in command_map and len(parts) > 2 else parts[1:]
 
-        if user_input in command_map:
-            handler = command_map[user_input]
+        if cmd in command_map:
+            handler = command_map[cmd]
             try:
-                result = handler([])
+                result = handler(args)
                 if result:
                     print(result)
             except Exception as e:
