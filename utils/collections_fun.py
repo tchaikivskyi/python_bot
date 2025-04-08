@@ -1,35 +1,83 @@
 from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
+from utils.input_validate_phone import input_validate_phone
+from utils.input_validate_email import input_validate_email
+from utils.input_validate_br import input_validate_br
+
+# To move edit_contact_options to another file
+edit_contact_options = {
+    "1": "Edit Name",
+    "2": "Edit Phones",
+    "3": "Edit Emails",
+    "4": "Edit birthday",
+    "5": "Edit address",
+}
 
 
 @input_error
-def add_contact(args, book: AddressBook):
+def add_contact(book: AddressBook):
+    user_first_name = input("Enter a your first name : ")
+    user_last_name = input("Enter a your last name : ")
+    user_email = input_validate_email()
+    user_phones = input_validate_phone()
+    user_br = input_validate_br()
 
-    name, phone, *_ = args
-    record = book.find(name)
-    message = "Contact updated."
+    new_user = {
+        "first_name": user_first_name,
+        "last_name": user_last_name,
+        "email": user_email,
+        "phones": user_phones,
+        "birthday_date": user_br,
+    }
 
-    if record is None:
-        record = Record(name)
-        book.add_record(record)
-        message = "Contact added."
-
-    if phone:
-        record.add_phone(phone)
+    record = Record(**new_user)
+    book.add_record(record)
+    # You need to add check fun if user exist !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    message = "User is saved"
+    print(message)
     return message
 
 
 @input_error
-def change_contact(args, book: AddressBook):
-    name, old_phone, new_phone = args
-    record = book.find(name)
+def change_contact(book: AddressBook):
+    user_name_input = input("Enter contact name to edit : ")
+    record = book.find(user_name_input)
     if not record:
         return "Contact not found!"
+    print()
+    print("Edit options")
+    print()
 
-    if record.edit_phone(old_phone, new_phone):
-        return f"Contact {name} updated with new phone!"
-    return "Old phone number not found!"
+    for key, value in edit_contact_options.items():
+        print(f"{key} - {value}")
+
+    chose_input = input("Choose what to edit (1-5): ")
+
+    match chose_input:
+        case "1":  # Edit Name
+            pass
+        case "2":  # Edit Phones
+            new_phone = input("Give me a new phone:😯 ")
+            record.edit_phone(new_phone)
+        case "3":  # "Edit Emails",
+            pass
+        case "4":  # "Edit birthday",
+            pass
+        case "5":  # "Edit address",
+            pass
+        case _:
+            print("Invalid command!")
+
+
+# name, old_phone, new_phone = args
+# record = book.find(name)
+# if not record:
+#     return "Contact not found!"
+
+# if record.edit_phone(old_phone, new_phone):
+#     return f"Contact {name} updated with new phone!"
+# return "Old phone number not found!"
 
 
 @input_error
