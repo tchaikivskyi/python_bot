@@ -13,7 +13,7 @@ def main():
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
         "contact show": lambda args: fn.contact_show(args, book),
-        "contact all": lambda args: fn.show_all(args, book),
+        "contact all": lambda args: fn.show_all(book),
         "contact search": lambda args: fn.contact_search(args, book),
         "contact delete": lambda args: print("contact delete"),
         "contact phone": lambda args: fn.show_phone(args, book),
@@ -23,12 +23,13 @@ def main():
         "contact show-birthday": lambda args: fn.show_up_birthdays(args, book),
         "contact birthdays": lambda args: fn.birthdays(args, book),
         "note add": lambda args: notes_fun.add_note(note),
-        "note edit": lambda args: print("note edit"),
+        "note edit": lambda args: notes_fun.edit_note(note),
         "note all": lambda args: notes_fun.show_all(args, note),
-        "note search": lambda args: print("note search"),
+        "note search": lambda args: notes_fun.search_note_by_title(note),
         "note add-tag": lambda args: print("note add-tag"),
         "note search-by-tag": lambda args: print("note search-by-tag"),
         "note sort-by-tag": lambda args: print("note sort-by-tag"),
+        "note delete": lambda args: notes_fun.delete_note(note),
     }
 
     while True:
