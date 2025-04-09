@@ -1,10 +1,10 @@
 from datetime import datetime
 
 
-def input_validate_br():
+def input_validate_br(message="Enter your birthday in DD.MM.YYYY format: "):
     while True:
         try:
-            value = input("Enter your birthday in DD.MM.YYYY format: ")
+            value = input(message)
             if value and isinstance(value, str):
                 parse_date = datetime.strptime(value, "%d.%m.%Y").date()
                 return parse_date

@@ -10,17 +10,23 @@ def main():
     command_map = {
         "hello": lambda *args: print("How can I help you?"),
         "help": lambda *args: print_menu(),
-        "contact add": lambda args: fn.add_contact(book),
-        "contact edit": lambda args: fn.change_contact(book),
-        "contact show": lambda args: fn.contact_show(args, book),
-        "contact all": lambda args: fn.show_all(args, book),
-        "contact search": lambda args: fn.contact_search(args, book),
+        # "contact add": lambda args: fn.add_contact(book),
+        "add": lambda args: fn.add_contact(book),
+        # "contact edit": lambda args: fn.change_contact(book),
+        "edit": lambda args: fn.change_contact(book),
+        # "contact show": lambda args: fn.contact_show(args, book),
+        "show": lambda args: fn.contact_show(book),
+        # "contact all": lambda args: fn.show_all(args, book),
+        "all": lambda args: fn.show_all(book),
+        # "contact search": lambda args: fn.contact_search(args, book),
+        "s": lambda args: fn.contact_search(book),
         "contact delete": lambda args: print("contact delete"),
         "contact phone": lambda args: fn.show_phone(args, book),
         "contact email": lambda args: print("contact email"),
         "contact address": lambda args: print("contact address"),
         "contact add-birthday": lambda args: fn.add_birthday(args, book),
-        "contact show-birthday": lambda args: fn.show_birthday(args, book),
+        # "contact show-birthday": lambda args: fn.show_up_birthdays(args, book),
+        "sb": lambda args: fn.show_up_birthdays(book),
         "contact birthdays": lambda args: fn.birthdays(args, book),
         "note add": lambda args: notes_fun.add_note(note),
         "note edit": lambda args: print("note edit"),
@@ -37,9 +43,13 @@ def main():
         if not user_input:
             print("Invalid command.")
             continue
-        
+
         parts = user_input.split()
-        cmd = " ".join(parts[:2]) if len(parts) >= 2 and " ".join(parts[:2]) in command_map else parts[0]
+        cmd = (
+            " ".join(parts[:2])
+            if len(parts) >= 2 and " ".join(parts[:2]) in command_map
+            else parts[0]
+        )
         args = parts[2:] if cmd in command_map and len(parts) > 2 else parts[1:]
 
         if cmd in command_map:

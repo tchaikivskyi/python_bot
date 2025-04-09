@@ -1,7 +1,7 @@
-def input_validate_phone():
+def input_validate_phone(message="Enter your phone number: "):
     while True:
         try:
-            value = input("Enter your phone number: ")
+            value = input(message)
             if value.isdigit() and len(value) == 10:
                 return value
             else:

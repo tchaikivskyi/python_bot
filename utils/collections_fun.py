@@ -1,3 +1,4 @@
+from datetime import datetime
 from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
@@ -5,20 +6,16 @@ from utils.input_validate_phone import input_validate_phone
 from utils.input_validate_email import input_validate_email
 from utils.input_validate_br import input_validate_br
 
-# To move edit_contact_options to another file
-edit_contact_options = {
-    "1": "Edit Name",
-    "2": "Edit Phones",
-    "3": "Edit Emails",
-    "4": "Edit birthday",
-    "5": "Edit address",
-}
-
 
 @input_error
 def add_contact(book: AddressBook):
-    user_first_name = input("Enter a your first name : ")
-    user_last_name = input("Enter a your last name : ")
+    user_first_name = input("Enter your first name: ")
+    user_last_name = input("Enter your last name: ")
+    full_name = f"{user_first_name} {user_last_name}"
+
+    if book.find_by_full_name(full_name):
+        return f"Contact '{full_name}' already exists!"
+
     user_email = input_validate_email()
     user_phones = input_validate_phone()
     user_br = input_validate_br()
@@ -33,70 +30,112 @@ def add_contact(book: AddressBook):
 
     record = Record(**new_user)
     book.add_record(record)
-    # You need to add check fun if user exist !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    message = "User is saved"
-    print(message)
-    return message
+
+    return "User is saved"
 
 
 @input_error
 def change_contact(book: AddressBook):
-    user_name_input = input("Enter contact name to edit : ")
-    record = book.find(user_name_input)
+    full_name_input = input("Enter contact full name to edit (First Last): ").strip()
+    record = book.find_by_full_name(full_name_input)
+
     if not record:
-        return "Contact not found!"
-    print()
-    print("Edit options")
-    print()
+        print("Contact not found!")
+        return
 
-    for key, value in edit_contact_options.items():
-        print(f"{key} - {value}")
+    print("\nEdit options\n")
+    print("1 - Edit Name")
+    print("2 - Edit Phones")
+    print("3 - Edit Emails")
+    print("4 - Edit birthday")
+    print("5 - Edit address")
+    print("6 - Edit remove contact\n")
 
-    chose_input = input("Choose what to edit (1-5): ")
+    choice = input("Choose what to edit (1-5): ").strip()
 
-    match chose_input:
+    match choice:
         case "1":  # Edit Name
-            pass
+            old_key = f"{record.first_name.value} {record.last_name.value}"
+            new_first = input("Enter a new first name: ").strip()
+            new_last = input("Enter a new last name: ").strip()
+            record.change_name(new_first, new_last)
+            new_key = f"{record.first_name.value} {record.last_name.value}"
+
+            if old_key != new_key:
+                book.data.pop(old_key)
+                book.data[new_key] = record
+
+            print("Name updated successfully.")
+
         case "2":  # Edit Phones
-            new_phone = input("Give me a new phone:😯 ")
-            record.edit_phone(new_phone)
-        case "3":  # "Edit Emails",
-            pass
-        case "4":  # "Edit birthday",
-            pass
-        case "5":  # "Edit address",
-            pass
+            print("Current phones:")
+            for p in record.phones:
+                print(f"- {p}")
+
+            print("\nEdit phone options")
+            print("1 - Add new phone")
+            print("2 - Edit phone")
+            print("3 - Delete\n")
+
+            action = input("Choose action: (1-3): ").strip()
+
+            if action == "1":
+                new_phone = input_validate_phone()
+                record.add_phone(new_phone)
+                print("Phone added.")
+            elif action == "2":
+                old_phone = input("Enter the old phone to replace: ").strip()
+                new_phone = input_validate_phone("Enter the new phone: ")
+                if record.edit_phone(old_phone, new_phone):
+                    print("Phone updated.")
+                else:
+                    print("Old phone not found.")
+            elif action == "3":
+                phone_to_remove = input("Enter the phone to delete: ").strip()
+                if record.remove_phone(phone_to_remove):
+                    print("Phone deleted.")
+                else:
+                    print("Phone not found.")
+            else:
+                print("Invalid phone action.")
+
+        case "3":  # Edit Email
+            new_email = input_validate_email("Enter a new email: ")
+            record.change_email(new_email)
+            print("Email updated.")
+
+        case "4":  # Edit Birthday
+            print(f"\nYour current birthday date is - {record.birthday}\n")
+            new_birthday = input_validate_br("Enter a new birthday (DD.MM.YYYY): ")
+            record.add_birthday(new_birthday)
+            print("Birthday updated.")
+
+        case "5":  # Edit Address
+            new_address = input("Enter a new address: ").strip()
+            record.change_address(new_address)
+            print("Address updated.")
+        case "6":  # Remove
+            current_user_name = record.get_full_name()
+            print(f"\nCurrent user full name = {current_user_name}\n")
+            ask_input = (
+                input("Are you sure that yo want to remove contact ?: (Y|N)  ")
+                .lower()
+                .strip()
+            )
+            if ask_input == "y":
+                book.delete(current_user_name)
+                print(f"Contact with name {current_user_name} is deleted successfully ")
+            elif ask_input == "n":
+                return
+            else:
+                print("Invalid answer command!")
+
         case _:
             print("Invalid command!")
 
 
-# name, old_phone, new_phone = args
-# record = book.find(name)
-# if not record:
-#     return "Contact not found!"
-
-# if record.edit_phone(old_phone, new_phone):
-#     return f"Contact {name} updated with new phone!"
-# return "Old phone number not found!"
-
-
 @input_error
-def show_phone(args, book):
-    name = args[0]
-    record = book.find(name)
-    if not record:
-        return "Contact not found!"
-
-    phones = [p.value for p in record.phones]
-    return (
-        f"Phone(s) for {name}: {', '.join(phones)}"
-        if phones
-        else "No phone number found!"
-    )
-
-
-@input_error
-def show_all(_, book: AddressBook):
+def show_all(book: AddressBook):
     if not book.data:
         return "Your address book is empty!"
 
@@ -104,59 +143,96 @@ def show_all(_, book: AddressBook):
 
 
 @input_error
-def add_birthday(args, book: AddressBook):
-    if len(args) < 2:
-        return "Please use format: add-birthday <name> <DD.MM.YYYY>"
+def show_up_birthdays(book: AddressBook):
+    days_input = input(
+        "Enter the number of days to check upcoming birthdays (default is 7) : "
+    )
 
-    name, birthday_date = args
-    record = book.find(name)
-    if not record:
-        return "Contact not found!"
+    if not days_input:
+        days_input = 7
 
-    record.add_birthday(birthday_date)
-    return f"Birthday for {name} added!"
+    upcoming_birthdays = book.get_upcoming_birthdays(days=int(days_input))
 
-
-@input_error
-def show_birthday(args, book: AddressBook):
-    name = args[0]
-    record = book.find(name)
-    if not record:
-        return "Contact not found!"
-
-    if not record.birthday:
-        return f"No birthday found for {name}"
-
-    return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
-
-
-@input_error
-def birthdays(_, book: AddressBook):
-    upcoming_birthdays = book.get_upcoming_birthdays()
-    if upcoming_birthdays == "No upcoming birthdays.":
-        return upcoming_birthdays
+    if not upcoming_birthdays:
+        return "No upcoming birthdays."
 
     return "\n".join(
         [
-            f"{record.name.value}: {record.birthday.value.strftime('%d.%m.%Y')}"
+            f"{record.first_name.value.title()} {record.last_name.value.title()}: {record.birthday.value.strftime('%d.%m.%Y')}"
             for record in upcoming_birthdays
         ]
     )
 
-@input_error
-def contact_search(args, book: AddressBook):
-    pass
-
 
 @input_error
-def contact_show(args, book: AddressBook):
-    if not args:
-        return "Please provide the name of the contact."
+def contact_show(book: AddressBook):
 
-    name = args[0]
-    record = book.find(name)
+    full_name_input = (
+        input("Enter contact full name to show you (First Last): ").strip().lower()
+    )
+
+    record = book.find_by_full_name(full_name_input)
 
     if not record:
-        return "Contact not found!"
+        return "Contact not found! Try again"
 
-    return str(record)
+    return record
+
+
+@input_error
+def contact_search(book: AddressBook):
+    input_query = input("Enter a search word or date of birth in DD.MM.YYYY format : ")
+
+    if not input_query:
+        print(
+            "You have to enter any search word or date of birth in DD.MM.YYYY format  "
+        )
+        return
+
+    results = book.find_by_query_field(input_query)
+
+    if not results:
+        return "No matching contacts found."
+
+    return "\n".join(str(record) for record in results)
+
+
+# @input_error
+# def add_birthday(args, book: AddressBook):
+#     if len(args) < 2:
+#         return "Please use format: add-birthday <name> <DD.MM.YYYY>"
+
+#     name, birthday_date = args
+#     record = book.find_by_full_name(name)
+#     if not record:
+#         return "Contact not found!"
+
+#     record.add_birthday(birthday_date)
+#     return f"Birthday for {name} added!"
+
+
+# @input_error
+# def show_birthday(args, book: AddressBook):
+#     name = args[0]
+#     record = book.find_by_full_name(name)
+#     if not record:
+#         return "Contact not found!"
+
+#     if not record.birthday:
+#         return f"No birthday found for {name}"
+
+#     return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
+
+# @input_error
+# def show_phone(args, book):
+#     name = args[0]
+#     record = book.find(name)
+#     if not record:
+#         return "Contact not found!"
+
+#     phones = [p.value for p in record.phones]
+#     return (
+#         f"Phone(s) for {name}: {', '.join(phones)}"
+#         if phones
+#         else "No phone number found!"
+#     )
