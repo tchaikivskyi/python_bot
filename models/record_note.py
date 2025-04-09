@@ -1,12 +1,14 @@
+# from models.notes_book import NotesBook
+
 class RecordNote:
-    def __init__(self, title, description = "", tags = []):
+    def __init__(self, title, description = "", tags = None):
         self.title = title
         self.description = description
-        self.tags = tags
+        self.tags = tags if tags else []
 
     def __str__(self):
-        return f"Note title: {self.title}"
+        tags = "; ".join(t for t in self.tags)
+        return f"{self.title} {self.description} {self.tags}"
 
-
-
- 
+    def add_note(self, note):
+        self.append(note)
