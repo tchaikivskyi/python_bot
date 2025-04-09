@@ -134,19 +134,19 @@ def change_contact(book: AddressBook):
             print("Invalid command!")
 
 
-@input_error
-def show_phone(args, book):
-    name = args[0]
-    record = book.find(name)
-    if not record:
-        return "Contact not found!"
+# @input_error
+# def show_phone(args, book):
+#     name = args[0]
+#     record = book.find(name)
+#     if not record:
+#         return "Contact not found!"
 
-    phones = [p.value for p in record.phones]
-    return (
-        f"Phone(s) for {name}: {', '.join(phones)}"
-        if phones
-        else "No phone number found!"
-    )
+#     phones = [p.value for p in record.phones]
+#     return (
+#         f"Phone(s) for {name}: {', '.join(phones)}"
+#         if phones
+#         else "No phone number found!"
+#     )
 
 
 @input_error
@@ -157,42 +157,50 @@ def show_all(_, book: AddressBook):
     return "\n".join([str(record) for record in book.data.values()])
 
 
+# @input_error
+# def add_birthday(args, book: AddressBook):
+#     if len(args) < 2:
+#         return "Please use format: add-birthday <name> <DD.MM.YYYY>"
+
+#     name, birthday_date = args
+#     record = book.find_by_full_name(name)
+#     if not record:
+#         return "Contact not found!"
+
+#     record.add_birthday(birthday_date)
+#     return f"Birthday for {name} added!"
+
+
+# @input_error
+# def show_birthday(args, book: AddressBook):
+#     name = args[0]
+#     record = book.find_by_full_name(name)
+#     if not record:
+#         return "Contact not found!"
+
+#     if not record.birthday:
+#         return f"No birthday found for {name}"
+
+#     return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
+
+
 @input_error
-def add_birthday(args, book: AddressBook):
-    if len(args) < 2:
-        return "Please use format: add-birthday <name> <DD.MM.YYYY>"
+def show_up_birthdays(_, book: AddressBook):
+    days_input = input(
+        "Enter the number of days to check upcoming birthdays (default is 7) : "
+    )
 
-    name, birthday_date = args
-    record = book.find_by_full_name(name)
-    if not record:
-        return "Contact not found!"
+    if not days_input:
+        days_input = 7
 
-    record.add_birthday(birthday_date)
-    return f"Birthday for {name} added!"
+    upcoming_birthdays = book.get_upcoming_birthdays(days=int(days_input))
 
-
-@input_error
-def show_birthday(args, book: AddressBook):
-    name = args[0]
-    record = book.find_by_full_name(name)
-    if not record:
-        return "Contact not found!"
-
-    if not record.birthday:
-        return f"No birthday found for {name}"
-
-    return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
-
-
-@input_error
-def birthdays(_, book: AddressBook):
-    upcoming_birthdays = book.get_upcoming_birthdays()
     if not upcoming_birthdays:
         return "No upcoming birthdays."
 
     return "\n".join(
         [
-            f"{record.first_name.value} {record.last_name.value}: {record.birthday.value.strftime('%d.%m.%Y')}"
+            f"{record.first_name.value.title()} {record.last_name.value.title()}: {record.birthday.value.strftime('%d.%m.%Y')}"
             for record in upcoming_birthdays
         ]
     )
