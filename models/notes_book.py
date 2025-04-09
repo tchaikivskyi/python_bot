@@ -13,3 +13,8 @@ class NotesBook(UserDict):
     def delete(self, title):
         return self.data.pop(title)
 
+    def search_by_tag(self, tag):
+        matching_notes = [
+            record for record in self.data.values() if tag in record.tags
+        ]
+        return matching_notes
