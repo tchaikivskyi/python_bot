@@ -134,27 +134,67 @@ def change_contact(book: AddressBook):
             print("Invalid command!")
 
 
-# @input_error
-# def show_phone(args, book):
-#     name = args[0]
-#     record = book.find(name)
-#     if not record:
-#         return "Contact not found!"
-
-#     phones = [p.value for p in record.phones]
-#     return (
-#         f"Phone(s) for {name}: {', '.join(phones)}"
-#         if phones
-#         else "No phone number found!"
-#     )
-
-
 @input_error
-def show_all(_, book: AddressBook):
+def show_all(book: AddressBook):
     if not book.data:
         return "Your address book is empty!"
 
     return "\n".join([str(record) for record in book.data.values()])
+
+
+@input_error
+def show_up_birthdays(book: AddressBook):
+    days_input = input(
+        "Enter the number of days to check upcoming birthdays (default is 7) : "
+    )
+
+    if not days_input:
+        days_input = 7
+
+    upcoming_birthdays = book.get_upcoming_birthdays(days=int(days_input))
+
+    if not upcoming_birthdays:
+        return "No upcoming birthdays."
+
+    return "\n".join(
+        [
+            f"{record.first_name.value.title()} {record.last_name.value.title()}: {record.birthday.value.strftime('%d.%m.%Y')}"
+            for record in upcoming_birthdays
+        ]
+    )
+
+
+@input_error
+def contact_show(book: AddressBook):
+
+    full_name_input = (
+        input("Enter contact full name to show you (First Last): ").strip().lower()
+    )
+
+    record = book.find_by_full_name(full_name_input)
+
+    if not record:
+        return "Contact not found! Try again"
+
+    return record
+
+
+@input_error
+def contact_search(book: AddressBook):
+    input_query = input("Enter a search word or date of birth in DD.MM.YYYY format : ")
+
+    if not input_query:
+        print(
+            "You have to enter any search word or date of birth in DD.MM.YYYY format  "
+        )
+        return
+
+    results = book.find_by_query_field(input_query)
+
+    if not results:
+        return "No matching contacts found."
+
+    return "\n".join(str(record) for record in results)
 
 
 # @input_error
@@ -183,44 +223,16 @@ def show_all(_, book: AddressBook):
 
 #     return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
 
+# @input_error
+# def show_phone(args, book):
+#     name = args[0]
+#     record = book.find(name)
+#     if not record:
+#         return "Contact not found!"
 
-@input_error
-def show_up_birthdays(_, book: AddressBook):
-    days_input = input(
-        "Enter the number of days to check upcoming birthdays (default is 7) : "
-    )
-
-    if not days_input:
-        days_input = 7
-
-    upcoming_birthdays = book.get_upcoming_birthdays(days=int(days_input))
-
-    if not upcoming_birthdays:
-        return "No upcoming birthdays."
-
-    return "\n".join(
-        [
-            f"{record.first_name.value.title()} {record.last_name.value.title()}: {record.birthday.value.strftime('%d.%m.%Y')}"
-            for record in upcoming_birthdays
-        ]
-    )
-
-
-@input_error
-def contact_search(args, book: AddressBook):
-    pass
-
-
-@input_error
-def contact_show(book: AddressBook):
-
-    full_name_input = (
-        input("Enter contact full name to show you (First Last): ").strip().lower()
-    )
-
-    record = book.find_by_full_name(full_name_input)
-
-    if not record:
-        return "Contact not found! Try again"
-
-    return record
+#     phones = [p.value for p in record.phones]
+#     return (
+#         f"Phone(s) for {name}: {', '.join(phones)}"
+#         if phones
+#         else "No phone number found!"
+#     )

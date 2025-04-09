@@ -16,6 +16,7 @@ class Record:
         self.first_name = Name(first_name.lower().strip())
         self.last_name = Name(last_name.lower().strip())
         self.email = Name(email)
+
         if isinstance(phones, list):
             self.phones = [Phone(p) if not isinstance(p, Phone) else p for p in phones]
         else:
