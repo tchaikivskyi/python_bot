@@ -13,7 +13,7 @@ def add_contact(book: AddressBook):
     user_last_name = input("Enter your last name: ")
     full_name = f"{user_first_name} {user_last_name}"
 
-    if book.find(full_name):
+    if book.find_by_full_name(full_name):
         return f"Contact '{full_name}' already exists!"
 
     user_email = input_validate_email()
@@ -36,8 +36,8 @@ def add_contact(book: AddressBook):
 
 @input_error
 def change_contact(book: AddressBook):
-    user_name_input = input("Enter contact full name to edit (First Last): ").strip()
-    record = book.find(user_name_input)
+    full_name_input = input("Enter contact full name to edit (First Last): ").strip()
+    record = book.find_by_full_name(full_name_input)
 
     if not record:
         print("Contact not found!")
@@ -48,7 +48,8 @@ def change_contact(book: AddressBook):
     print("2 - Edit Phones")
     print("3 - Edit Emails")
     print("4 - Edit birthday")
-    print("5 - Edit address\n")
+    print("5 - Edit address")
+    print("6 - Edit remove contact\n")
 
     choice = input("Choose what to edit (1-5): ").strip()
 
@@ -113,6 +114,21 @@ def change_contact(book: AddressBook):
             new_address = input("Enter a new address: ").strip()
             record.change_address(new_address)
             print("Address updated.")
+        case "6":  # Remove
+            current_user_name = record.get_full_name()
+            print(f"\nCurrent user full name = {current_user_name}\n")
+            ask_input = (
+                input("Are you sure that yo want to remove contact ?: (Y|N)  ")
+                .lower()
+                .strip()
+            )
+            if ask_input == "y":
+                book.delete(current_user_name)
+                print(f"Contact with name {current_user_name} is deleted successfully ")
+            elif ask_input == "n":
+                return
+            else:
+                print("Invalid answer command!")
 
         case _:
             print("Invalid command!")
@@ -147,7 +163,7 @@ def add_birthday(args, book: AddressBook):
         return "Please use format: add-birthday <name> <DD.MM.YYYY>"
 
     name, birthday_date = args
-    record = book.find(name)
+    record = book.find_by_full_name(name)
     if not record:
         return "Contact not found!"
 
@@ -158,7 +174,7 @@ def add_birthday(args, book: AddressBook):
 @input_error
 def show_birthday(args, book: AddressBook):
     name = args[0]
-    record = book.find(name)
+    record = book.find_by_full_name(name)
     if not record:
         return "Contact not found!"
 
@@ -190,11 +206,11 @@ def contact_search(args, book: AddressBook):
 @input_error
 def contact_show(book: AddressBook):
 
-    user_name_input = (
+    full_name_input = (
         input("Enter contact full name to show you (First Last): ").strip().lower()
     )
 
-    record = book.find(user_name_input)
+    record = book.find_by_full_name(full_name_input)
 
     if not record:
         return "Contact not found! Try again"

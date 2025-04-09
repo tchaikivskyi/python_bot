@@ -34,6 +34,9 @@ class Record:
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     def remove_phone(self, phone):
         for p in self.phones:
             if p.value == phone:
