@@ -1,19 +1,18 @@
 from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
-from libs.storage import load_data, save_data
-
+from utils.storage import load_data, save_data
+from utils.colored_text import colored_input, colored_text
 
 def main():
     book, note = load_data().values()
-    print("Welcome to the assistant bot!")
 
     command_map = {
-        "hello": lambda *args: print("How can I help you?"),
+        "hello": lambda *args: colored_text("How can I help you?"),
         "help": lambda *args: print_menu(),
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
-        "contact show": lambda args: fn.contact_show(args, book),
-        "contact all": lambda args: fn.show_all(args, book),
+        "contact show": lambda args: fn.contact_show(book),
+        "contact all": lambda args: fn.show_all(book),
         "contact search": lambda args: fn.contact_search(args, book),
         "contact delete": lambda args: print("contact delete"),
         "contact phone": lambda args: fn.show_phone(args, book),
@@ -32,10 +31,10 @@ def main():
     }
 
     while True:
-        user_input = input("Enter a command: ").strip().lower()
+        user_input = colored_input("Enter a command: ", "blue").strip().lower()
 
         if not user_input:
-            print("Invalid command.")
+            colored_text("Invalid command.", "red")
             continue
 
         parts = user_input.split()
@@ -51,17 +50,18 @@ def main():
             try:
                 result = handler(args)
                 if result:
-                    print(result)
+                    colored_text(result)
             except Exception as e:
-                print(f"Error: {e}")
+                colored_text(f"Error: {e}")
         elif user_input in ("exit", "close"):
             save_data({"book": book, "note": note})
-            print("Good bye!")
+            colored_text("Good bye!")
             break
         else:
-            print("Invalid command.")
+            colored_text("Invalid command.", "red")
 
 
 if __name__ == "__main__":
+    colored_text("Welcome to the assistant bot!")
     print_menu()
     main()
