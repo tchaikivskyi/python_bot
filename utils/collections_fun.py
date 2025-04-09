@@ -1,3 +1,4 @@
+from datetime import datetime
 from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
@@ -105,6 +106,7 @@ def change_contact(book: AddressBook):
             print("Email updated.")
 
         case "4":  # Edit Birthday
+            print(f"\nYour current birthday date is - {record.birthday}\n")
             new_birthday = input_validate_br("Enter a new birthday (DD.MM.YYYY): ")
             record.add_birthday(new_birthday)
             print("Birthday updated.")
