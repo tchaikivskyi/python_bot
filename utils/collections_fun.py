@@ -6,8 +6,6 @@ from utils.input_validate_phone import input_validate_phone
 from utils.input_validate_email import input_validate_email
 from utils.input_validate_br import input_validate_br
 
-# To move edit_contact_options to another file
-
 
 @input_error
 def add_contact(book: AddressBook):
@@ -190,14 +188,15 @@ def contact_search(args, book: AddressBook):
 
 
 @input_error
-def contact_show(args, book: AddressBook):
-    if not args:
-        return "Please provide the name of the contact."
+def contact_show(book: AddressBook):
 
-    name = args[0]
-    record = book.find(name)
+    user_name_input = (
+        input("Enter contact full name to show you (First Last): ").strip().lower()
+    )
+
+    record = book.find(user_name_input)
 
     if not record:
-        return "Contact not found!"
+        return "Contact not found! Try again"
 
-    return str(record)
+    return record

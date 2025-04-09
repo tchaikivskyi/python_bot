@@ -15,7 +15,7 @@ def main():
         # "contact edit": lambda args: fn.change_contact(book),
         "edit": lambda args: fn.change_contact(book),
         # "contact show": lambda args: fn.contact_show(args, book),
-        "show": lambda args: fn.contact_show(args, book),
+        "show": lambda args: fn.contact_show(book),
         # "contact all": lambda args: fn.show_all(args, book),
         "all": lambda args: fn.show_all(args, book),
         "contact search": lambda args: fn.contact_search(args, book),

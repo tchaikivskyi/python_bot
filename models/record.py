@@ -5,9 +5,16 @@ from models.birthday import Birthday
 
 class Record:
 
-    def __init__(self, first_name, last_name, email, phones, birthday_date):
-        self.first_name = Name(first_name)
-        self.last_name = Name(last_name)
+    def __init__(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        phones: str,
+        birthday_date: str,
+    ):
+        self.first_name = Name(first_name.lower().strip())
+        self.last_name = Name(last_name.lower().strip())
         self.email = Name(email)
         if isinstance(phones, list):
             self.phones = [Phone(p) if not isinstance(p, Phone) else p for p in phones]
@@ -20,7 +27,7 @@ class Record:
         phones = "; ".join(p.value for p in self.phones)
         birthday = self.birthday.value.strftime("%d.%m.%Y") if self.birthday else "N/A"
         return (
-            f"Contact name: {self.first_name.value} {self.last_name.value}, "
+            f"Contact name: {self.first_name.value.title()} {self.last_name.value.title()}, "
             f"email: {self.email.value}, phones: {phones}, birthday: {birthday}"
         )
 

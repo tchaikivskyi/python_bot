@@ -8,11 +8,11 @@ class AddressBook(UserDict):
         key = f"{record.first_name.value} {record.last_name.value}"
         self.data[key] = record
 
-    def find(self, name):
-        return self.data.get(name)
+    def find(self, name: str):
+        return self.data.get(name.lower().strip())
 
     def delete(self, name):
-        return self.data.pop(name)
+        return self.data.pop(name.lower().strip())
 
     def get_upcoming_birthdays(self, days=7):
         upcoming_birthdays = []
