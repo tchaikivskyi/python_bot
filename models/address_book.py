@@ -5,7 +5,8 @@ from models.record import Record
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
-        self.data[record.first_name.value] = record
+        key = f"{record.first_name.value} {record.last_name.value}"
+        self.data[key] = record
 
     def find(self, name):
         return self.data.get(name)

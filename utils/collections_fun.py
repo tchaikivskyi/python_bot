@@ -6,19 +6,17 @@ from utils.input_validate_email import input_validate_email
 from utils.input_validate_br import input_validate_br
 
 # To move edit_contact_options to another file
-edit_contact_options = {
-    "1": "Edit Name",
-    "2": "Edit Phones",
-    "3": "Edit Emails",
-    "4": "Edit birthday",
-    "5": "Edit address",
-}
 
 
 @input_error
 def add_contact(book: AddressBook):
-    user_first_name = input("Enter a your first name : ")
-    user_last_name = input("Enter a your last name : ")
+    user_first_name = input("Enter your first name: ")
+    user_last_name = input("Enter your last name: ")
+    full_name = f"{user_first_name} {user_last_name}"
+
+    if book.find(full_name):
+        return f"Contact '{full_name}' already exists!"
+
     user_email = input_validate_email()
     user_phones = input_validate_phone()
     user_br = input_validate_br()
@@ -33,51 +31,91 @@ def add_contact(book: AddressBook):
 
     record = Record(**new_user)
     book.add_record(record)
-    # You need to add check fun if user exist !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    message = "User is saved"
-    print(message)
-    return message
+
+    return "User is saved"
 
 
 @input_error
 def change_contact(book: AddressBook):
-    user_name_input = input("Enter contact name to edit : ")
+    user_name_input = input("Enter contact full name to edit (First Last): ").strip()
     record = book.find(user_name_input)
+
     if not record:
-        return "Contact not found!"
-    print()
-    print("Edit options")
-    print()
+        print("Contact not found!")
+        return
 
-    for key, value in edit_contact_options.items():
-        print(f"{key} - {value}")
+    print("\nEdit options\n")
+    print("1 - Edit Name")
+    print("2 - Edit Phones")
+    print("3 - Edit Emails")
+    print("4 - Edit birthday")
+    print("5 - Edit address\n")
 
-    chose_input = input("Choose what to edit (1-5): ")
+    choice = input("Choose what to edit (1-5): ").strip()
 
-    match chose_input:
+    match choice:
         case "1":  # Edit Name
-            pass
+            old_key = f"{record.first_name.value} {record.last_name.value}"
+            new_first = input("Enter a new first name: ").strip()
+            new_last = input("Enter a new last name: ").strip()
+            record.change_name(new_first, new_last)
+            new_key = f"{record.first_name.value} {record.last_name.value}"
+
+            if old_key != new_key:
+                book.data.pop(old_key)
+                book.data[new_key] = record
+
+            print("Name updated successfully.")
+
         case "2":  # Edit Phones
-            new_phone = input("Give me a new phone:😯 ")
-            record.edit_phone(new_phone)
-        case "3":  # "Edit Emails",
-            pass
-        case "4":  # "Edit birthday",
-            pass
-        case "5":  # "Edit address",
-            pass
+            print("Current phones:")
+            for p in record.phones:
+                print(f"- {p}")
+
+            print("\nEdit phone options")
+            print("1 - Add new phone")
+            print("2 - Edit phone")
+            print("3 - Delete\n")
+
+            action = input("Choose action: (1-3): ").strip()
+
+            if action == "1":
+                new_phone = input_validate_phone()
+                record.add_phone(new_phone)
+                print("Phone added.")
+            elif action == "2":
+                old_phone = input("Enter the old phone to replace: ").strip()
+                new_phone = input_validate_phone("Enter the new phone: ")
+                if record.edit_phone(old_phone, new_phone):
+                    print("Phone updated.")
+                else:
+                    print("Old phone not found.")
+            elif action == "3":
+                phone_to_remove = input("Enter the phone to delete: ").strip()
+                if record.remove_phone(phone_to_remove):
+                    print("Phone deleted.")
+                else:
+                    print("Phone not found.")
+            else:
+                print("Invalid phone action.")
+
+        case "3":  # Edit Email
+            new_email = input_validate_email("Enter a new email: ")
+            record.change_email(new_email)
+            print("Email updated.")
+
+        case "4":  # Edit Birthday
+            new_birthday = input_validate_br("Enter a new birthday (DD.MM.YYYY): ")
+            record.add_birthday(new_birthday)
+            print("Birthday updated.")
+
+        case "5":  # Edit Address
+            new_address = input("Enter a new address: ").strip()
+            record.change_address(new_address)
+            print("Address updated.")
+
         case _:
             print("Invalid command!")
-
-
-# name, old_phone, new_phone = args
-# record = book.find(name)
-# if not record:
-#     return "Contact not found!"
-
-# if record.edit_phone(old_phone, new_phone):
-#     return f"Contact {name} updated with new phone!"
-# return "Old phone number not found!"
 
 
 @input_error
@@ -133,15 +171,16 @@ def show_birthday(args, book: AddressBook):
 @input_error
 def birthdays(_, book: AddressBook):
     upcoming_birthdays = book.get_upcoming_birthdays()
-    if upcoming_birthdays == "No upcoming birthdays.":
-        return upcoming_birthdays
+    if not upcoming_birthdays:
+        return "No upcoming birthdays."
 
     return "\n".join(
         [
-            f"{record.name.value}: {record.birthday.value.strftime('%d.%m.%Y')}"
+            f"{record.first_name.value} {record.last_name.value}: {record.birthday.value.strftime('%d.%m.%Y')}"
             for record in upcoming_birthdays
         ]
     )
+
 
 @input_error
 def contact_search(args, book: AddressBook):
