@@ -2,7 +2,7 @@ from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
 from utils.storage import load_data, save_data
 from utils.colored_text import colored_input, colored_text
-from utils.input_hinter import suggest_commands 
+from utils.input_hinter import suggest_commands
 
 
 def main():
@@ -16,8 +16,8 @@ def main():
         "contact show": lambda args: fn.contact_show(book),
         "contact all": lambda args: fn.show_all(book),
         "contact search": lambda args: fn.contact_search(book),
-        "contact delete": lambda args: print("contact delete"),
-        "contact birthdays": lambda args: fn.birthdays(book),
+        "contact delete": lambda args: fn.delete_contact(book),
+        "contact birthdays": lambda args: fn.show_up_birthdays(book),
         "note add": lambda args: notes_fun.add_note(note),
         "note edit": lambda args: print("note edit"),
         "note all": lambda args: notes_fun.show_all(args, note),
