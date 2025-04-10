@@ -22,10 +22,11 @@ def print_menu():
                 ("note add", "Add a new note"),
                 ("note edit", "Edit a note"),
                 ("note all ", "Show all notes"),
-                ("note search", "Search notes"),
+                ("note search", "Search notes by title"),
                 ("note add-tag", "Add a tag to a note"),
                 ("note search-by-tag", "Search notes by tag"),
                 ("note sort-by-tag", "Sort notes by tags"),
+                ("note delete", "Delete note"),
             ]
         },
         {

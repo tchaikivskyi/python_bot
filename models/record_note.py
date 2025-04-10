@@ -13,7 +13,7 @@ class RecordNote:
 
     def __str__(self):
         tags = ", ".join(t for t in self.tags)
-        return f"title: {self.title} text: {self.description} tags: {tags}"
+        return f"Title: {self.title}, Text: {self.description}, Tags: {tags}"
 
     # def __rich__(self):
     #     content = Text()

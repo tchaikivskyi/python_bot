@@ -19,12 +19,13 @@ def main():
         "contact delete": lambda args: print("contact delete"),
         "contact birthdays": lambda args: fn.birthdays(book),
         "note add": lambda args: notes_fun.add_note(note),
-        "note edit": lambda args: print("note edit"),
+        "note edit": lambda args: notes_fun.edit_note(note),
         "note all": lambda args: notes_fun.show_all(args, note),
-        "note search": lambda args: print("note search"),
+        "note search": lambda args: notes_fun.search_note_by_title(note),
         "note add-tag": lambda args: print("note add-tag"),
         "note search-by-tag": lambda args: notes_fun.search_by_tag(args, note),
         "note sort-by-tag": lambda args: notes_fun.sort_by_tags(args, note),
+        "note delete": lambda args: notes_fun.delete_note(note),
     }
 
     while True:
