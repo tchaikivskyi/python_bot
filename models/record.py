@@ -12,24 +12,25 @@ class Record:
         email: str,
         phones: str,
         birthday_date: str,
+        address: str,
     ):
         self.first_name = Name(first_name.lower().strip())
         self.last_name = Name(last_name.lower().strip())
         self.email = Name(email)
+        self.address = Name(address.lower())
+        self.birthday = Birthday(birthday_date)
 
         if isinstance(phones, list):
             self.phones = [Phone(p) if not isinstance(p, Phone) else p for p in phones]
         else:
             self.phones = [Phone(phones)]
 
-        self.birthday = Birthday(birthday_date)
-
     def __str__(self):
         phones = "; ".join(p.value for p in self.phones)
         birthday = self.birthday.value.strftime("%d.%m.%Y") if self.birthday else "N/A"
         return (
             f"Contact name: {self.first_name.value.title()} {self.last_name.value.title()}, "
-            f"email: {self.email.value}, phones: {phones}, birthday: {birthday}"
+            f"Email: {self.email.value}, Phones: {phones}, Address: {self.address.value.title()}, Birthday: {birthday}"
         )
 
     def add_phone(self, phone):
@@ -53,7 +54,7 @@ class Record:
         self.email = Name(new_email)
 
     def change_address(self, new_address):
-        self.address = new_address
+        self.address = Name(new_address)
 
     def edit_phone(self, old_phone, new_phone):
         for p in self.phones:

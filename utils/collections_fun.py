@@ -2,7 +2,11 @@ from datetime import datetime
 from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
-from utils.input_validate import input_validate_phone, input_validate_email, input_validate_br
+from utils.input_validate import (
+    input_validate_phone,
+    input_validate_email,
+    input_validate_br,
+)
 from utils.table import dynamic_table
 from utils.parse_to_dict import parse_data_str_to_dict
 from utils.colored_text import colored_input, colored_text
@@ -20,6 +24,7 @@ def add_contact(book: AddressBook):
     user_email = input_validate_email()
     user_phones = input_validate_phone()
     user_br = input_validate_br()
+    user_address = colored_input("Enter your address: ", "cyan")
 
     new_user = {
         "first_name": user_first_name,
@@ -27,6 +32,7 @@ def add_contact(book: AddressBook):
         "email": user_email,
         "phones": user_phones,
         "birthday_date": user_br,
+        "address": user_address,
     }
 
     record = Record(**new_user)
@@ -37,7 +43,9 @@ def add_contact(book: AddressBook):
 
 @input_error
 def change_contact(book: AddressBook):
-    full_name_input = colored_input("Enter contact full name to edit (First Last): ").strip()
+    full_name_input = colored_input(
+        "Enter contact full name to edit (First Last): "
+    ).strip()
     record = book.find_by_full_name(full_name_input)
 
     if not record:
@@ -49,8 +57,7 @@ def change_contact(book: AddressBook):
     colored_text("2 - Edit Phones", "cyan")
     colored_text("3 - Edit Emails", "cyan")
     colored_text("4 - Edit birthday", "cyan")
-    colored_text("5 - Edit address", "cyan")
-    colored_text("6 - Edit remove contact\n", "cyan")
+    colored_text("5 - Edit address\n", "cyan")
 
     choice = colored_input("Choose what to edit (1-5): ").strip()
 
@@ -84,15 +91,21 @@ def change_contact(book: AddressBook):
                 new_phone = input_validate_phone()
                 record.add_phone(new_phone)
                 colored_text("Phone added.")
+
             elif action == "2":
-                old_phone = colored_input("Enter the old phone to replace: ", "cyan").strip()
+                old_phone = colored_input(
+                    "Enter the old phone to replace: ", "cyan"
+                ).strip()
                 new_phone = input_validate_phone("Enter the new phone: ")
                 if record.edit_phone(old_phone, new_phone):
                     colored_text("Phone updated.")
                 else:
                     colored_text("Old phone not found.", "yellow")
+
             elif action == "3":
-                phone_to_remove = colored_input("Enter the phone to delete: ", "cyan").strip()
+                phone_to_remove = colored_input(
+                    "Enter the phone to delete: ", "cyan"
+                ).strip()
                 if record.remove_phone(phone_to_remove):
                     colored_text("Phone deleted.")
                 else:
@@ -106,7 +119,9 @@ def change_contact(book: AddressBook):
             colored_text("Email updated.")
 
         case "4":  # Edit Birthday
-            colored_text(f"\nYour current birthday date is - {record.birthday}\n", "cyan")
+            colored_text(
+                f"\nYour current birthday date is - {record.birthday}\n", "cyan"
+            )
             new_birthday = input_validate_br("Enter a new birthday (DD.MM.YYYY): ")
             record.add_birthday(new_birthday)
             colored_text("Birthday updated.")
@@ -115,22 +130,6 @@ def change_contact(book: AddressBook):
             new_address = colored_input("Enter a new address: ", "cyan").strip()
             record.change_address(new_address)
             colored_text("Address updated.")
-        case "6":  # Remove
-            current_user_name = record.get_full_name()
-            colored_text(f"\nCurrent user full name = {current_user_name}\n", "cyan")
-            ask_input = (
-                colored_input("Are you sure that yo want to remove contact ?: (Y|N)  ")
-                .lower()
-                .strip()
-            )
-            if ask_input == "y":
-                book.delete(current_user_name)
-                colored_text(f"Contact with name {current_user_name} is deleted successfully ")
-            elif ask_input == "n":
-                return
-            else:
-                colored_text("Invalid answer command!", "red")
-
         case _:
             colored_text("Invalid command!", "red")
 
@@ -139,17 +138,13 @@ def change_contact(book: AddressBook):
 def show_all(book: AddressBook):
     if not book.data:
         return "Your address book is empty!"
-    
+
     contacts_list = []
     for record in book.data.values():
         contact_dict = parse_data_str_to_dict(str(record))
         contacts_list.append(contact_dict)
-    
-    dynamic_table(
-        title="All contacts",
-        rows=contacts_list,
-        style="cyan"
-    )
+
+    dynamic_table(title="All contacts", rows=contacts_list, style="cyan")
 
 
 @input_error
@@ -178,7 +173,9 @@ def show_up_birthdays(book: AddressBook):
 def contact_show(book: AddressBook):
 
     full_name_input = (
-        colored_input("Enter contact full name to show you (First Last): ", "cyan").strip().lower()
+        colored_input("Enter contact full name to show you (First Last): ", "cyan")
+        .strip()
+        .lower()
     )
 
     record = book.find_by_full_name(full_name_input)
@@ -189,17 +186,22 @@ def contact_show(book: AddressBook):
     dynamic_table(
         title=f"Contact {full_name_input} details",
         style="cyan",
-        rows=parse_data_str_to_dict("\n".join([str(record) for record in book.data.values()])),
+        rows=parse_data_str_to_dict(
+            "\n".join([str(record) for record in book.data.values()])
+        ),
     )
 
 
 @input_error
 def contact_search(book: AddressBook):
-    input_query = colored_input("Enter a search word or date of birth in DD.MM.YYYY format : ", "cyan").strip()
+    input_query = colored_input(
+        "Enter a search word or date of birth in DD.MM.YYYY format ", "cyan"
+    ).strip()
 
     if not input_query:
         colored_text(
-            "You have to enter any search word or date of birth in DD.MM.YYYY format  ", "cyan"
+            "You have to enter any search word or date of birth in DD.MM.YYYY format  ",
+            "cyan",
         )
         return
 
@@ -211,42 +213,34 @@ def contact_search(book: AddressBook):
     return "\n".join(str(record) for record in results)
 
 
-# @input_error
-# def add_birthday(args, book: AddressBook):
-#     if len(args) < 2:
-#         return "Please use format: add-birthday <name> <DD.MM.YYYY>"
+@input_error
+def delete_contact(book: AddressBook):
+    full_name_input = colored_input(
+        "Enter contact full name to remove from address book (First Last): "
+    ).strip()
 
-#     name, birthday_date = args
-#     record = book.find_by_full_name(name)
-#     if not record:
-#         return "Contact not found!"
+    record = book.find_by_full_name(full_name_input)
 
-#     record.add_birthday(birthday_date)
-#     return f"Birthday for {name} added!"
+    if not record:
+        colored_text("Contact not found!", "yellow")
+        return
 
+    current_user_name = record.get_full_name()
 
-# @input_error
-# def show_birthday(args, book: AddressBook):
-#     name = args[0]
-#     record = book.find_by_full_name(name)
-#     if not record:
-#         return "Contact not found!"
+    colored_text(
+        f"\nCurrent user full name = {current_user_name}\n", "cyan"
+    )  # Change Please!!! You have to show the table of user data
 
-#     if not record.birthday:
-#         return f"No birthday found for {name}"
+    ask_input = (
+        colored_input("Are you sure that yo want to remove contact ?: (Y|N)  ")
+        .lower()
+        .strip()
+    )
 
-#     return f"{name}'s birthday: {record.birthday.value.strftime('%d.%m.%Y')}"
-
-# @input_error
-# def show_phone(args, book):
-#     name = args[0]
-#     record = book.find(name)
-#     if not record:
-#         return "Contact not found!"
-
-#     phones = [p.value for p in record.phones]
-#     return (
-#         f"Phone(s) for {name}: {', '.join(phones)}"
-#         if phones
-#         else "No phone number found!"
-#     )
+    if ask_input == "y":
+        book.delete(current_user_name)
+        colored_text(f"Contact with name {current_user_name} is deleted successfully ")
+    elif ask_input == "n":
+        return
+    else:
+        colored_text("Invalid answer command!", "red")
