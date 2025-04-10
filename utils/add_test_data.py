@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 from models.record import Record
+from models.record_note import RecordNote
 from utils.colored_text import colored_text
 
 import random
@@ -33,11 +34,12 @@ def add_test_data(book, note):
 
     for i in range(1, 6):
         note_title = f"Test Note {i}"
-        note_data = {
-            "text": f"This is the content of test note {i}.",
-            "tags": [f"tag{i}", "test"]
-        }
-        note[note_title] = note_data
+        note_obj = RecordNote(
+            title=note_title,
+            description=f"This is the content of test note {i}.",
+            tags=[f"tag{i}", "test"]
+        )
+        note[note_title] = note_obj
 
     colored_text("✅ Added 5 test contacts and 5 test notes.", "green")
 
