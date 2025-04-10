@@ -1,42 +1,38 @@
 from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
-from libs.storage import load_data, save_data
+from utils.storage import load_data, save_data
+from utils.colored_text import colored_input, colored_text
+from utils.input_hinter import suggest_commands 
 
 
 def main():
     book, note = load_data().values()
-    print("Welcome to the assistant bot!")
 
     command_map = {
-        "hello": lambda *args: print("How can I help you?"),
+        "hello": lambda *args: colored_text("How can I help you?"),
         "help": lambda *args: print_menu(),
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
-        "contact show": lambda args: fn.contact_show(args, book),
+        "contact show": lambda args: fn.contact_show(book),
         "contact all": lambda args: fn.show_all(book),
-        "contact search": lambda args: fn.contact_search(args, book),
+        "contact search": lambda args: fn.contact_search(book),
         "contact delete": lambda args: print("contact delete"),
-        "contact phone": lambda args: fn.show_phone(args, book),
-        "contact email": lambda args: print("contact email"),
-        "contact address": lambda args: print("contact address"),
-        "contact add-birthday": lambda args: fn.add_birthday(args, book),
-        "contact show-birthday": lambda args: fn.show_up_birthdays(args, book),
-        "contact birthdays": lambda args: fn.birthdays(args, book),
+        "contact birthdays": lambda args: fn.birthdays(book),
         "note add": lambda args: notes_fun.add_note(note),
         "note edit": lambda args: notes_fun.edit_note(note),
         "note all": lambda args: notes_fun.show_all(args, note),
         "note search": lambda args: notes_fun.search_note_by_title(note),
         "note add-tag": lambda args: print("note add-tag"),
-        "note search-by-tag": lambda args: print("note search-by-tag"),
-        "note sort-by-tag": lambda args: print("note sort-by-tag"),
+        "note search-by-tag": lambda args: notes_fun.search_by_tag(args, note),
+        "note sort-by-tag": lambda args: notes_fun.sort_by_tags(args, note),
         "note delete": lambda args: notes_fun.delete_note(note),
     }
 
     while True:
-        user_input = input("Enter a command: ").strip().lower()
+        user_input = colored_input("Enter a command: ", "blue").strip().lower()
 
         if not user_input:
-            print("Invalid command.")
+            colored_text("Invalid command.", "red")
             continue
 
         parts = user_input.split()
@@ -52,17 +48,24 @@ def main():
             try:
                 result = handler(args)
                 if result:
-                    print(result)
+                    colored_text(result)
             except Exception as e:
-                print(f"Error: {e}")
+                colored_text(f"Error: {e}", "red")
         elif user_input in ("exit", "close"):
             save_data({"book": book, "note": note})
-            print("Good bye!")
+            colored_text("Good bye!")
             break
         else:
-            print("Invalid command.")
+            suggestions = suggest_commands(user_input, command_map)
+            if suggestions:
+                colored_text("Did you mean one of these?", "yellow")
+                for suggestion in suggestions:
+                    colored_text(f" - {suggestion}", "yellow")
+            else:
+                colored_text("Invalid command.", "red")
 
 
 if __name__ == "__main__":
+    colored_text("Welcome to the assistant bot!")
     print_menu()
     main()

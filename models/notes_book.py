@@ -12,4 +12,3 @@ class NotesBook(UserDict):
 
     def delete(self, title):
         return self.data.pop(title)
-
