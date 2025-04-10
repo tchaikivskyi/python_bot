@@ -2,6 +2,7 @@ from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
 from utils.storage import load_data, save_data
 from utils.colored_text import colored_input, colored_text
+from utils.input_hinter import suggest_commands 
 
 def main():
     book, note = load_data().values()
@@ -48,13 +49,19 @@ def main():
                 if result:
                     colored_text(result)
             except Exception as e:
-                colored_text(f"Error: {e}")
+                colored_text(f"Error: {e}", "red")
         elif user_input in ("exit", "close"):
             save_data({"book": book, "note": note})
             colored_text("Good bye!")
             break
         else:
-            colored_text("Invalid command.", "red")
+            suggestions = suggest_commands(user_input, command_map)
+            if suggestions:
+                colored_text("Did you mean one of these?", "yellow")
+                for suggestion in suggestions:
+                    colored_text(f" - {suggestion}", "yellow")
+            else:
+                colored_text("Invalid command.", "red")
 
 
 if __name__ == "__main__":
