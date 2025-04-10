@@ -2,7 +2,9 @@ from utils import collections_fun as fn, notes_fun
 from utils.menu import print_menu
 from utils.storage import load_data, save_data
 from utils.colored_text import colored_input, colored_text
-from utils.input_hinter import suggest_commands
+from utils.input_hinter import suggest_commands 
+from utils.add_test_data import add_test_data
+
 
 
 def main():
@@ -11,6 +13,7 @@ def main():
     command_map = {
         "hello": lambda *args: colored_text("How can I help you?"),
         "help": lambda *args: print_menu(),
+        "test data": lambda *args: add_test_data(book, note),
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
         "contact show": lambda args: fn.contact_show(book),
@@ -19,16 +22,17 @@ def main():
         "contact delete": lambda args: fn.delete_contact(book),
         "contact birthdays": lambda args: fn.show_up_birthdays(book),
         "note add": lambda args: notes_fun.add_note(note),
-        "note edit": lambda args: print("note edit"),
+        "note edit": lambda args: notes_fun.edit_note(note),
         "note all": lambda args: notes_fun.show_all(args, note),
-        "note search": lambda args: print("note search"),
+        "note search": lambda args: notes_fun.search_note_by_title(note),
         "note add-tag": lambda args: print("note add-tag"),
         "note search-by-tag": lambda args: notes_fun.search_by_tag(args, note),
         "note sort-by-tag": lambda args: notes_fun.sort_by_tags(args, note),
+        "note delete": lambda args: notes_fun.delete_note(note),
     }
 
     while True:
-        user_input = colored_input("Enter a command: ", "blue").strip().lower()
+        user_input = colored_input("Enter a command", "blue").strip().lower()
 
         if not user_input:
             colored_text("Invalid command.", "red")
