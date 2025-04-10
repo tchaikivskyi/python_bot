@@ -3,6 +3,7 @@ from utils.menu import print_menu
 from utils.storage import load_data, save_data
 from utils.colored_text import colored_input, colored_text
 from utils.input_hinter import suggest_commands 
+from utils.add_test_data import add_test_data
 
 
 def main():
@@ -11,6 +12,7 @@ def main():
     command_map = {
         "hello": lambda *args: colored_text("How can I help you?"),
         "help": lambda *args: print_menu(),
+        "test data": lambda *args: add_test_data(book, note),
         "contact add": lambda args: fn.add_contact(book),
         "contact edit": lambda args: fn.change_contact(book),
         "contact show": lambda args: fn.contact_show(book),
@@ -29,7 +31,7 @@ def main():
     }
 
     while True:
-        user_input = colored_input("Enter a command: ", "blue").strip().lower()
+        user_input = colored_input("Enter a command", "blue").strip().lower()
 
         if not user_input:
             colored_text("Invalid command.", "red")
