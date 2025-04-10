@@ -7,8 +7,8 @@ class RecordNote:
         self.tags = tags if tags else []
 
     def __str__(self):
-        tags = "; ".join(t for t in self.tags)
-        return f"Title: {self.title}, Description: {self.description}, Tags: {', '.join(self.tags)}"
+        tags = ", ".join(t for t in self.tags)
+        return f"title: {self.title} text: {self.description} tags: {tags}"
 
     def add_note(self, note):
         self.append(note)

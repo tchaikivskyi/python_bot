@@ -43,17 +43,12 @@ def search_note_by_title(note: NotesBook):
         else:
             print("Title cannot be empty. Please enter a valid title.")
     
-    results = [record for record in note.data.values() if query in record.title.lower()]
+    results = [record for record in note.data.values() if query in record.title.lower() == query]
 
     if not results:
-        return f"No notes found with title containing '{query}'."
+        print(f"No notes found with title '{query}'.")
 
-    formatted_results = [
-        f"Title: {record.title}, Description: {record.description}, Tags: {', '.join(record.tags)}"
-        for record in results
-    ]
-
-    return "\n".join(formatted_results)
+    return "\n".join([str(record) for record in results])
 
 # Function edit note
 @input_error
@@ -67,22 +62,16 @@ def edit_note(note: NotesBook):
             print("Title cannot be empty. Please enter a valid title.")
 
     # Step 2: Search for the note by title
-    results = [record for record in note.data.values() if title_to_edit in record.title.lower()]
+    results = [record for record in note.data.values() if title_to_edit in record.title.lower() == title_to_edit]
 
     if not results:
         return f"No notes found with title containing '{title_to_edit}'."
 
     # Step 3: Show the found notes
     print("Found the following notes:")
+    print("\n".join([str(record) for record in results]))
 
-    formatted_results = [
-        f"Title: {record.title}, Description: {record.description}, Tags: {', '.join(record.tags)}"
-        for record in results
-    ]
-
-    print("\n".join(formatted_results))
-
-    # Step 4: Allow user to edit the title, description, and tags
+    #Step 4: Allow user to edit the title, description, and tags
     note_to_edit = results[0]
 
     new_title = input(f"Enter new title (current: '{note_to_edit.title}') or press Enter to keep it: ").strip()
@@ -123,18 +112,14 @@ def delete_note(note: NotesBook):
             print("Title cannot be empty. Please enter a valid title.")
 
     # Step 2: Search for the note by title
-    results = [record for record in note.data.values() if title_to_delete in record.title.lower()]
+    results = [record for record in note.data.values() if title_to_delete in record.title.lower() == title_to_delete]
 
     if not results:
         return f"No notes found with title containing '{title_to_delete}'."
 
     # Step 3: Show the found notes
     print("Found the following notes:")
-    formatted_results = [
-        f"Title: {record.title}, Description: {record.description}, Tags: {', '.join(record.tags)}"
-        for record in results
-    ]
-    print("\n".join(formatted_results))
+    print("\n".join([str(record) for record in results]))
 
     # Step 4: Confirm the user wants to delete the note
     confirm = input(f"Are you sure you want to delete the note titled '{results[0].title}'? (yes/no): ").strip().lower()
