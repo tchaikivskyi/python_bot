@@ -6,6 +6,7 @@ from utils.input_hinter import suggest_commands
 from utils.add_test_data import add_test_data
 
 
+
 def main():
     book, note = load_data().values()
 
@@ -18,8 +19,8 @@ def main():
         "contact show": lambda args: fn.contact_show(book),
         "contact all": lambda args: fn.show_all(book),
         "contact search": lambda args: fn.contact_search(book),
-        "contact delete": lambda args: print("contact delete"),
-        "contact birthdays": lambda args: fn.birthdays(book),
+        "contact delete": lambda args: fn.delete_contact(book),
+        "contact birthdays": lambda args: fn.show_up_birthdays(book),
         "note add": lambda args: notes_fun.add_note(note),
         "note edit": lambda args: notes_fun.edit_note(note),
         "note all": lambda args: notes_fun.show_all(args, note),
