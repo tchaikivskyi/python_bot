@@ -8,7 +8,7 @@ class RecordNote:
 
     def __str__(self):
         tags = "; ".join(t for t in self.tags)
-        return f"{self.title} {self.description} {self.tags}"
+        return f"Title: {self.title}, Description: {self.description}, Tags: {', '.join(self.tags)}"
 
     def add_note(self, note):
         self.append(note)
