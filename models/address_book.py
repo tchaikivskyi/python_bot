@@ -22,10 +22,12 @@ class AddressBook(UserDict):
                 or query in record.last_name.value.lower()
                 or query in record.email.value.lower()
                 or any(query in phone.value.lower() for phone in record.phones)
-                or (hasattr(record, "address") and query in record.address.lower())
+                or (
+                    hasattr(record, "address") and query in record.address.value.lower()
+                )
             ):
                 results.append(record)
-                continue  # шукаємо далі
+                continue
 
         if record.birthday:
             bday_str = record.birthday.value.strftime("%d.%m.%Y")
