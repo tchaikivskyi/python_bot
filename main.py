@@ -22,7 +22,7 @@ def main():
         "note all": lambda args: notes_fun.show_all(args, note),
         "note search": lambda args: print("note search"),
         "note add-tag": lambda args: print("note add-tag"),
-        "note search-by-tag": lambda args: notes_fun.search_by_tag(note),
+        "note search-by-tag": lambda args: notes_fun.search_by_tag(args, note),
         "note sort-by-tag": lambda args: notes_fun.sort_by_tags(args, note),
     }
 
