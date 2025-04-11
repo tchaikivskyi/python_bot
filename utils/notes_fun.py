@@ -5,6 +5,7 @@ from rich.console import Console
 from utils.table import dynamic_table
 from utils.parse_to_dict import parse_data_str_to_dict
 from utils.colored_text import colored_input, colored_text
+from utils.parse_to_dict import parse_data_str_to_dict_notes
 
 console = Console()
 
@@ -32,10 +33,12 @@ def show_all(_, note: NotesBook):
     if not note.data:
         return "Your notes book is empty!"
     
-    for record in note.data.values():
-        console.print(record) 
-    return ""
+    rows = [parse_data_str_to_dict_notes(str(record)) for record in note.data.values()]
+    dynamic_table(title="All notes", rows=rows, style="cyan")
     
+    # for record in note.data.values():
+    #     console.print(record) 
+    # return ""
     # return "\n".join([str(record) for record in note.data.values()])
 
 @input_error
@@ -48,20 +51,15 @@ def search_by_tag(_, note: NotesBook):
     matching_notes = [
         record for record in note.data.values() if tag_to_search in record.tags
     ]
-    
+
     if not matching_notes:
         return colored_text(f"No notes found with the tag '{tag_to_search}'")
-    
+  
+    rows = [parse_data_str_to_dict_notes(str(record)) for record in matching_notes]
+    dynamic_table(title="Notes found", rows=rows, style="cyan")
     # for record in matching_notes:
-    #     print(f"Title: {record.title}")
-    #     print(f"Text: {record.description}")
-    #     print(f"Tags: {', '.join(record.tags)}\n")
-    # return ""
-    for record in matching_notes:
-        console.print(record)  
+    #     console.print(record) 
     return ""
-
-
 
 @input_error
 def sort_by_tags(_, note: NotesBook):
@@ -69,12 +67,6 @@ def sort_by_tags(_, note: NotesBook):
         return colored_text("Your notes book is empty!")
 
     sorted_notes = sorted(note.data.values(), key=lambda record: record.tags[0] if record.tags else "")
-
-    # for record in sorted_notes:
-    #     print(f"Title: {record.title}")
-    #     print(f"Text: {record.description}")
-    #     print(f"Tags: {', '.join(record.tags)}\n")
-    # return ""
 
     # return "\n".join([str(record) for record in sorted_notes])
 
@@ -93,7 +85,7 @@ def search_note_by_title(note: NotesBook):
         if query:
             break
         else:
-            print("Title cannot be empty. Please enter a valid title.")
+            print(colored_text("Title cannot be empty. Please enter a valid title."))
     
     results = [record for record in note.data.values() if query in record.title.lower()]
 
@@ -107,7 +99,7 @@ def search_note_by_title(note: NotesBook):
 def edit_note(note: NotesBook):
     # Step 1: Ask for the note's title to be edited and ensure it's not empty
     while True:
-        title_to_edit = colored_input("Enter Note's Title to be edited: ").strip().lower()
+        title_to_edit = colored_input("Enter Note's Title to be edited: ", "blue").strip().lower()
         if title_to_edit:
             break
         else:
