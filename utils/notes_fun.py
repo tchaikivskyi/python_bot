@@ -2,15 +2,17 @@ from decorators.error_handlers import input_error
 from models.notes_book import NotesBook
 from models.record_note import RecordNote
 from rich.console import Console
+from utils.table import dynamic_table
+from utils.parse_to_dict import parse_data_str_to_dict
+from utils.colored_text import colored_input, colored_text
 
 console = Console()
 
 @input_error
 def add_note(note: NotesBook):
-    print("Funcion create note\n")
-    title = input("Enter title: ")
-    description = input("Enter text: ")
-    tags = input("Enter tags separated by commas: ")
+    title = colored_input("Enter title: ", "blue")
+    description = colored_input("Enter text: ", "blue")
+    tags = colored_input("Enter tags separated by commas: ", "blue")
     tags = [tag.strip() for tag in tags.split(",")] if tags else []
 
     new_note = {
@@ -22,9 +24,7 @@ def add_note(note: NotesBook):
     record = RecordNote(**new_note)
     note.add_record(record)
 
-    message = "Note is saved"
-    print(message)
-    return message
+    return colored_text("Note is saved")
 
 
 @input_error
@@ -40,17 +40,17 @@ def show_all(_, note: NotesBook):
 
 @input_error
 def search_by_tag(_, note: NotesBook):
-    tag_to_search = input("Enter the tag to search for: ").strip()
+    tag_to_search = colored_input("Enter the tag to search for: ", "blue").strip()
 
     if not tag_to_search:
-        return "Tag cannot be empty."
+        return colored_text("Tag cannot be empty")
 
     matching_notes = [
         record for record in note.data.values() if tag_to_search in record.tags
     ]
     
     if not matching_notes:
-        return f"No notes found with the tag '{tag_to_search}'."
+        return colored_text(f"No notes found with the tag '{tag_to_search}'")
     
     # for record in matching_notes:
     #     print(f"Title: {record.title}")
@@ -66,7 +66,7 @@ def search_by_tag(_, note: NotesBook):
 @input_error
 def sort_by_tags(_, note: NotesBook):
     if not note.data:
-        return "Your notes book is empty!"
+        return colored_text("Your notes book is empty!")
 
     sorted_notes = sorted(note.data.values(), key=lambda record: record.tags[0] if record.tags else "")
 
@@ -87,7 +87,7 @@ def sort_by_tags(_, note: NotesBook):
 def search_note_by_title(note: NotesBook):
     # Ask for the note's title to search and ensure it's not empty
     while True:
-        query = input("Enter Note's Title: ").strip().lower()
+        query = colored_input(("Enter Note's Title: ").strip().lower(), "blue")
         if query:
             break
         else:
@@ -109,24 +109,24 @@ def edit_note(note: NotesBook):
         if title_to_edit:
             break
         else:
-            print("Title cannot be empty. Please enter a valid title.")
+            print(colored_text("Title cannot be empty. Please enter a valid title."))
 
     # Step 2: Search for the note by title
     results = [record for record in note.data.values() if title_to_edit in record.title.lower() == title_to_edit]
 
     if not results:
-        return f"No notes found with title containing '{title_to_edit}'."
+        return colored_text(f"No notes found with title containing '{title_to_edit}'.")
 
     # Step 3: Show the found notes
-    print("Found the following notes:")
-    print("\n".join([str(record) for record in results]))
+    print(colored_text("Found the following notes:"))
+    print(colored_text("\n".join([str(record) for record in results])))
 
     #Step 4: Allow user to edit the title, description, and tags
     note_to_edit = results[0]
 
-    new_title = input(f"Enter new title (current: '{note_to_edit.title}') or press Enter to keep it: ").strip()
-    new_description = input(f"Enter new description (current: '{note_to_edit.description}') or press Enter to keep it: ").strip()
-    new_tags = input(f"Enter new tags separated by commas (current: {', '.join(note_to_edit.tags)}) or press Enter to keep them: ").strip()
+    new_title = colored_input(f"Enter new title (current: '{note_to_edit.title}') or press Enter to keep it: ", "blue").strip()
+    new_description = colored_input(f"Enter new description (current: '{note_to_edit.description}') or press Enter to keep it: ", "blue").strip()
+    new_tags = colored_input(f"Enter new tags separated by commas (current: {', '.join(note_to_edit.tags)}) or press Enter to keep them: ", "blue").strip()
 
     # Check if any field has changed and update accordingly
     changes_made = False
@@ -146,36 +146,36 @@ def edit_note(note: NotesBook):
     # Only update the note in the data if any change has been made
     if changes_made:
         note.data[note_to_edit.title] = note_to_edit
-        return f"Note '{note_to_edit.title}' has been updated!"
+        return colored_text(f"Note '{note_to_edit.title}' has been updated!")
     else:
-        return "No changes made to the note."
+        return colored_text("No changes made to the note")
     
 # Function delete note
 @input_error
 def delete_note(note: NotesBook):
     # Step 1: Ask for the note's title to be deleted and ensure it's not empty
     while True:
-        title_to_delete = input("Enter Note's Title to be deleted: ").strip().lower()
+        title_to_delete = colored_input("Enter Note's Title to be deleted: ", "blue").strip().lower()
         if title_to_delete:
             break
         else:
-            print("Title cannot be empty. Please enter a valid title.")
+            print(colored_text("Title cannot be empty. Please enter a valid title."))
 
     # Step 2: Search for the note by title
     results = [record for record in note.data.values() if title_to_delete in record.title.lower() == title_to_delete]
 
     if not results:
-        return f"No notes found with title containing '{title_to_delete}'."
+        return colored_text(f"No notes found with title containing '{title_to_delete}'")
 
     # Step 3: Show the found notes
-    print("Found the following notes:")
-    print("\n".join([str(record) for record in results]))
+    print(colored_text("Found the following notes:"))
+    print(colored_text("\n".join([str(record) for record in results])))
 
     # Step 4: Confirm the user wants to delete the note
-    confirm = input(f"Are you sure you want to delete the note titled '{results[0].title}'? (yes/no): ").strip().lower()
+    confirm = colored_input(f"Are you sure you want to delete the note titled '{results[0].title}'? (yes/no): ", "blue").strip().lower()
     if confirm == 'yes':
         # Deleting the note
         del note.data[results[0].title]
-        return f"Note '{results[0].title}' has been deleted."
+        return colored_text(f"Note '{results[0].title}' has been deleted")
     else:
-        return "Deletion cancelled."
+        return colored_text("Deletion cancelled")
