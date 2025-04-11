@@ -12,9 +12,8 @@ class RecordNote:
         self.tags = tags if tags else []
 
     def __str__(self):
-        tags = ", ".join(t for t in self.tags)
-        return f"Title: {self.title}, Text: {self.description}, Tags: {tags}"
-
+        tags = ", ".join(self.tags)
+        return f"Title: {self.title} | Text: {self.description} | Tags: {tags}"
     # def __rich__(self):
     #     content = Text()
     #     content.append(f"📄 Text:\n", style="bold cyan")
