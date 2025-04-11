@@ -87,7 +87,9 @@ def sort_by_tags(_, note: NotesBook):
 def search_note_by_title(note: NotesBook):
     # Ask for the note's title to search and ensure it's not empty
     while True:
+
         query = colored_input(("Enter Note's Title: ").strip().lower(), "blue")
+        
         if query:
             break
         else:
@@ -96,7 +98,7 @@ def search_note_by_title(note: NotesBook):
     results = [record for record in note.data.values() if query in record.title.lower()]
 
     if not results:
-        print(f"No notes found with title '{query}'.")
+        return f"No notes found with title '{query}'."
 
     return "\n".join([str(record) for record in results])
 
@@ -105,7 +107,7 @@ def search_note_by_title(note: NotesBook):
 def edit_note(note: NotesBook):
     # Step 1: Ask for the note's title to be edited and ensure it's not empty
     while True:
-        title_to_edit = input("Enter Note's Title to be edited: ").strip().lower()
+        title_to_edit = colored_input("Enter Note's Title to be edited: ").strip().lower()
         if title_to_edit:
             break
         else:
@@ -123,6 +125,7 @@ def edit_note(note: NotesBook):
 
     #Step 4: Allow user to edit the title, description, and tags
     note_to_edit = results[0]
+    original_title = note_to_edit.title
 
     new_title = colored_input(f"Enter new title (current: '{note_to_edit.title}') or press Enter to keep it: ", "blue").strip()
     new_description = colored_input(f"Enter new description (current: '{note_to_edit.description}') or press Enter to keep it: ", "blue").strip()
@@ -145,6 +148,9 @@ def edit_note(note: NotesBook):
 
     # Only update the note in the data if any change has been made
     if changes_made:
+        if note_to_edit.title != original_title:
+            del note.data[original_title]
+
         note.data[note_to_edit.title] = note_to_edit
         return colored_text(f"Note '{note_to_edit.title}' has been updated!")
     else:
@@ -156,6 +162,7 @@ def delete_note(note: NotesBook):
     # Step 1: Ask for the note's title to be deleted and ensure it's not empty
     while True:
         title_to_delete = colored_input("Enter Note's Title to be deleted: ", "blue").strip().lower()
+
         if title_to_delete:
             break
         else:
@@ -173,6 +180,7 @@ def delete_note(note: NotesBook):
 
     # Step 4: Confirm the user wants to delete the note
     confirm = colored_input(f"Are you sure you want to delete the note titled '{results[0].title}'? (yes/no): ", "blue").strip().lower()
+
     if confirm == 'yes':
         # Deleting the note
         del note.data[results[0].title]

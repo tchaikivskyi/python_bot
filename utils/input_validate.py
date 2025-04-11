@@ -19,7 +19,6 @@ def input_validate_br(message="Enter your birthday in DD.MM.YYYY format: "):
             colored_text("The date you entered is invalid. Please try again.", "red")
 
 
-
 def input_validate_email(message="Enter your email address: "):
     while True:
         email = colored_input(message, "cyan")
@@ -29,9 +28,8 @@ def input_validate_email(message="Enter your email address: "):
             return email
         else:
             colored_text("Invalid email format. Please try again.", "red")
-      
-            
-            
+
+
 def input_validate_phone(message="Enter your phone number: "):
     while True:
         try:
@@ -41,4 +39,30 @@ def input_validate_phone(message="Enter your phone number: "):
             else:
                 raise ValueError("Phone number must contain exactly 10 digits.")
         except ValueError as e:
-            colored_text(f"The Phone you entered is invalid: {e} Please try again.", "red")
+            colored_text(
+                f"The Phone you entered is invalid: {e} Please try again.", "red"
+            )
+
+
+def input_validate_field(
+    message="Enter your name: ", length: int = 2, field_type: str = None
+):
+    while True:
+        try:
+            value = colored_input(message, "cyan").strip()
+
+            if len(value) < length:
+                raise ValueError(
+                    f"The input must contain at least {length} characters."
+                )
+
+            if field_type == "name":
+                if not value.isalpha():
+                    raise ValueError(
+                        "The name must contain only letters and no digits."
+                    )
+
+            return value
+
+        except ValueError as e:
+            colored_text(f"Invalid input: {e} Please try again.", "red")

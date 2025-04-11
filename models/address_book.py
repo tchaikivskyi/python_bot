@@ -16,7 +16,7 @@ class AddressBook(UserDict):
         results = []
 
         for key, record in self.data.items():
-            if (
+            matched = (
                 query in key.lower()
                 or query in record.first_name.value.lower()
                 or query in record.last_name.value.lower()
@@ -25,22 +25,24 @@ class AddressBook(UserDict):
                 or (
                     hasattr(record, "address") and query in record.address.value.lower()
                 )
-            ):
-                results.append(record)
-                continue
+            )
 
-        if record.birthday:
-            bday_str = record.birthday.value.strftime("%d.%m.%Y")
-            bday_day = record.birthday.value.strftime("%d")
-            bday_month = record.birthday.value.strftime("%m")
-            bday_year = record.birthday.value.strftime("%Y")
+            if record.birthday:
+                birthday = record.birthday.value
+                bday_str = birthday.strftime("%d.%m.%Y").lower()
+                bday_day = birthday.strftime("%d")
+                bday_month = birthday.strftime("%m")
+                bday_year = birthday.strftime("%Y")
 
-            if (
-                query in bday_str
-                or query == bday_day
-                or query == bday_month
-                or query == bday_year
-            ):
+                if (
+                    query in bday_str
+                    or query == bday_day
+                    or query == bday_month
+                    or query == bday_year
+                ):
+                    matched = True
+
+            if matched:
                 results.append(record)
 
         return results if results else None

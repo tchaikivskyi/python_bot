@@ -1,4 +1,3 @@
-from datetime import datetime
 from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
@@ -6,6 +5,7 @@ from utils.input_validate import (
     input_validate_phone,
     input_validate_email,
     input_validate_br,
+    input_validate_field,
 )
 from utils.table import dynamic_table
 from utils.parse_to_dict import parse_data_str_to_dict
@@ -14,8 +14,12 @@ from utils.colored_text import colored_input, colored_text
 
 @input_error
 def add_contact(book: AddressBook):
-    user_first_name = colored_input("Enter your first name: ", "cyan")
-    user_last_name = colored_input("Enter your last name: ", "cyan")
+    user_first_name = input_validate_field(
+        "Enter your first name: ", length=3, field_type="name"
+    )
+    user_last_name = input_validate_field(
+        "Enter your last name: ", length=3, field_type="name"
+    )
     full_name = f"{user_first_name} {user_last_name}"
 
     if book.find_by_full_name(full_name):
@@ -24,7 +28,7 @@ def add_contact(book: AddressBook):
     user_email = input_validate_email()
     user_phones = input_validate_phone()
     user_br = input_validate_br()
-    user_address = colored_input("Enter your address: ", "cyan")
+    user_address = input_validate_field("Enter your address: ", length=3)
 
     new_user = {
         "first_name": user_first_name,
@@ -170,8 +174,9 @@ def show_up_birthdays(book: AddressBook):
 
 
 @input_error
-def contact_show(book: AddressBook):
-
+def contact_show(
+    book: AddressBook,
+):
     full_name_input = (
         colored_input("Enter contact full name to show you (First Last): ", "cyan")
         .strip()
@@ -179,24 +184,17 @@ def contact_show(book: AddressBook):
     )
 
     record = book.find_by_full_name(full_name_input)
+    print(f"record", record)
 
     if not record:
         return "Contact not found! Try again"
-
-    dynamic_table(
-        title=f"Contact {full_name_input} details",
-        style="cyan",
-        rows=parse_data_str_to_dict(
-            "\n".join([str(record) for record in book.data.values()])
-        ),
-    )
 
 
 @input_error
 def contact_search(book: AddressBook):
     input_query = colored_input(
         "Enter a search word or date of birth in DD.MM.YYYY format ", "cyan"
-    ).strip()
+    )
 
     if not input_query:
         colored_text(
