@@ -9,7 +9,9 @@ def create_table(title, rows = [], style = 'green'):
         table.add_column(col, style=style)
     for row in rows:
         table.add_row(*row) # розпаковує елементи на масив row == ["add", "Add a new contact"]
+    __console__.print()  # Відступ зверху
     __console__.print(table)
+    __console__.print()  # Відступ знизу
     return table
 
 def dynamic_table(title, rows, style='green', column_order=None):
@@ -35,6 +37,8 @@ def dynamic_table(title, rows, style='green', column_order=None):
         row = [str(contact.get(key, "")) for key in all_keys]
         table.add_row(*row)
 
+    __console__.print()  # Відступ зверху
     __console__.print(table)
+    __console__.print()  # Відступ знизу
     return table
 
