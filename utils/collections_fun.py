@@ -205,12 +205,14 @@ def contact_search(book: AddressBook):
     if not results:
         colored_text("No matching contacts found.", "yellow")
         return
+    
+    contacts_list = []
+    for record in results:
+        contact_dict = parse_data_str_to_dict(str(record))
+        contacts_list.append(contact_dict)
 
-    dynamic_table(
-        title="Search Results",
-        rows=parse_data_str_to_dict("\n".join(str(record) for record in results)),
-        style="cyan"
-    )
+    dynamic_table(title="Search Results", rows=contacts_list, style="cyan")
+    
 
 def delete_contact(book: AddressBook):
     full_name_input = colored_input(
