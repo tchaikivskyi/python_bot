@@ -6,7 +6,6 @@ from utils.input_hinter import suggest_commands
 from utils.add_test_data import add_test_data
 
 
-
 def main():
     book, note = load_data().values()
 

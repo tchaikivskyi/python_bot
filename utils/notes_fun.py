@@ -105,7 +105,7 @@ def edit_note(note: NotesBook):
     colored_text("2 - Edit Description", "cyan")
     colored_text("3 - Edit Tags\n", "cyan")
 
-    choice = colored_input("Choose what to edit (1-3):", "blue").strip()
+    choice = colored_input("Choose what to edit (1-3)", "blue").strip()
 
     match choice:
         case "1":  # Edit Title
