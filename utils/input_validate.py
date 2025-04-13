@@ -3,7 +3,7 @@ import re
 from utils.colored_text import colored_input, colored_text
 
 
-def input_validate_br(message="Enter your birthday in DD.MM.YYYY format: "):
+def input_validate_br(message="Enter your birthday in DD.MM.YYYY format"):
     while True:
         try:
             value = colored_input(message, "cyan")
@@ -19,7 +19,7 @@ def input_validate_br(message="Enter your birthday in DD.MM.YYYY format: "):
             colored_text("The date you entered is invalid. Please try again.", "red")
 
 
-def input_validate_email(message="Enter your email address: "):
+def input_validate_email(message="Enter your email address"):
     while True:
         email = colored_input(message, "cyan")
         email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -30,7 +30,7 @@ def input_validate_email(message="Enter your email address: "):
             colored_text("Invalid email format. Please try again.", "red")
 
 
-def input_validate_phone(message="Enter your phone number: "):
+def input_validate_phone(message="Enter your phone number"):
     while True:
         try:
             value = colored_input(message, "cyan")
@@ -45,7 +45,7 @@ def input_validate_phone(message="Enter your phone number: "):
 
 
 def input_validate_field(
-    message="Enter your name: ", length: int = 2, field_type: str = None
+    message="Enter your name", length: int = 2, field_type: str = None
 ):
     while True:
         try:

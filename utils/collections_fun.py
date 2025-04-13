@@ -65,8 +65,12 @@ def change_contact(book: AddressBook):
     match choice:
         case "1":  # Edit Name
             old_key = f"{record.first_name.value} {record.last_name.value}"
-            new_first = colored_input("Enter a new first name", "cyan").strip()
-            new_last = colored_input("Enter a new last name", "cyan").strip()
+            new_first = input_validate_field(
+                "Enter a new first name", length=2, field_type="name"
+            )
+            new_last = input_validate_field(
+                "Enter a new last name", length=2, field_type="name"
+            )
             record.change_name(new_first, new_last)
             new_key = f"{record.first_name.value} {record.last_name.value}"
 
