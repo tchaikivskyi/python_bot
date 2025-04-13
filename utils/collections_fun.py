@@ -120,15 +120,15 @@ def change_contact(book: AddressBook):
             colored_text("Email updated.")
 
         case "4":  # Edit Birthday
-            colored_text(
-                f"\nYour current birthday date is - {record.birthday}\n", "cyan"
-            )
+            # colored_text(
+            #     f"\nYour current birthday date is - {record.birthday}\n", "cyan"
+            # )
             new_birthday = input_validate_br("Enter a new birthday (DD.MM.YYYY)")
             record.add_birthday(new_birthday)
             colored_text("Birthday updated.")
 
         case "5":  # Edit Address
-            new_address = colored_input("Enter a new address", "cyan").strip()
+            new_address = input_validate_field("Enter a new address", length=3).strip()
             record.change_address(new_address)
             colored_text("Address updated.")
         case _:
@@ -158,7 +158,7 @@ def show_up_birthdays(book: AddressBook):
     upcoming_birthdays = book.get_upcoming_birthdays(days=int(days_input))
 
     if not upcoming_birthdays:
-        return "No upcoming birthdays."
+        return colored_text("No upcoming birthdays.", "yellow")
 
     birthday_rows = [
         {
@@ -190,23 +190,27 @@ def contact_show(
 
 def contact_search(book: AddressBook):
     input_query = colored_input(
-        "Enter a search word or date of birth in DD.MM.YYYY format ", "cyan"
-    )
+        "Enter a search word or date of birth in DD.MM.YYYY format: ", "cyan"
+    ).strip()
 
     if not input_query:
         colored_text(
-            "You have to enter any search word or date of birth in DD.MM.YYYY format  ",
-            "cyan",
+            "Query cannot be empty.",
+            "yellow",
         )
         return
 
     results = book.find_by_query_field(input_query)
 
     if not results:
-        return "No matching contacts found."
+        colored_text("No matching contacts found.", "yellow")
+        return
 
-    return "\n".join(str(record) for record in results)
-
+    dynamic_table(
+        title="Search Results",
+        rows=parse_data_str_to_dict("\n".join(str(record) for record in results)),
+        style="cyan"
+    )
 
 def delete_contact(book: AddressBook):
     full_name_input = colored_input(
@@ -226,7 +230,7 @@ def delete_contact(book: AddressBook):
     )  # Change Please!!! You have to show the table of user data
 
     ask_input = (
-        colored_input("Are you sure that yo want to remove contact ? (Y|N)  ")
+        colored_input("Are you sure that yo want to remove contact ? (Y|N)")
         .lower()
         .strip()
     )
