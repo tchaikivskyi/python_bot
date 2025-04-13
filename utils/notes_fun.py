@@ -1,4 +1,3 @@
-from decorators.error_handlers import input_error
 from models.notes_book import NotesBook
 from models.record_note import RecordNote
 from rich.console import Console
@@ -10,7 +9,6 @@ from utils.input_validate import input_validate_field
 
 console = Console()
 
-@input_error
 def add_note(note: NotesBook):
     title = input_validate_field("Enter title", length=2, field_type="title")
     description = colored_input("Enter text", "blue")
@@ -29,7 +27,6 @@ def add_note(note: NotesBook):
     return colored_text("Note is saved")
 
 
-@input_error
 def show_all(_, note: NotesBook):
     if not note.data:
         return "Your notes book is empty!"
@@ -38,7 +35,6 @@ def show_all(_, note: NotesBook):
     dynamic_table(title="All notes", rows=rows, style="cyan")
     
 
-@input_error
 def search_by_tag(_, note: NotesBook):
     tag_to_search = colored_input("Enter the tag to search for", "blue").strip()
 
@@ -56,7 +52,6 @@ def search_by_tag(_, note: NotesBook):
     dynamic_table(title="Notes found", rows=rows, style="cyan")
 
 
-@input_error
 def sort_by_tags(_, note: NotesBook):
     if not note.data:
         return colored_text("Your notes book is empty!")
@@ -66,8 +61,7 @@ def sort_by_tags(_, note: NotesBook):
     rows = [parse_data_str_to_dict_notes(str(record)) for record in sorted_notes]
     dynamic_table(title="Notes sorted", rows=rows, style="cyan")
 
-# Function search notes by title
-@input_error
+
 def search_note_by_title(note: NotesBook):
     while True:
         query = colored_input("Enter Note's Title", "blue").strip().lower()
@@ -91,9 +85,6 @@ def search_note_by_title(note: NotesBook):
     )
 
 
-
-# Function edit note
-@input_error
 def edit_note(note: NotesBook):
     title_to_edit = colored_input("Enter note's title to edit", "blue").strip().lower()
 
@@ -178,10 +169,7 @@ def edit_note(note: NotesBook):
             colored_text("Invalid option!", "red")
 
     
-# Function delete note
-@input_error
 def delete_note(note: NotesBook):
-    # Step 1: Ask for the note's title to be deleted and ensure it's not empty
     while True:
         title_to_delete = colored_input("Enter Note's Title to be deleted", "blue").strip().lower()
 
@@ -190,23 +178,18 @@ def delete_note(note: NotesBook):
         else:
             return colored_text("Title cannot be empty. Please enter a valid title.")
 
-    # Step 2: Search for the note by title
     results = [record for record in note.data.values() if title_to_delete in record.title.lower() == title_to_delete]
 
     if not results:
         return colored_text(f"No notes found with title containing '{title_to_delete}'", "yellow")
 
-    # Step 3: Show the found notes
     colored_text("Found the following notes:")
-    # colored_text("\n".join([str(record) for record in results]))
     rows = [parse_data_str_to_dict_notes(str(record)) for record in results]
     dynamic_table(title=f"Note to delete", rows=rows, style="cyan")
 
-    # Step 4: Confirm the user wants to delete the note
     confirm = colored_input(f"Are you sure you want to delete the note titled '{results[0].title}'? (yes/no) ", "blue").strip().lower()
 
     if confirm == 'yes' or confirm == 'y':
-        # Deleting the note
         del note.data[results[0].title]
         return colored_text(f"Note '{results[0].title}' has been deleted")
     else:

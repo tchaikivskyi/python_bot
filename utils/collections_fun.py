@@ -1,4 +1,3 @@
-from decorators.error_handlers import input_error
 from models.address_book import AddressBook
 from models.record import Record
 from utils.input_validate import (
@@ -12,7 +11,6 @@ from utils.parse_to_dict import parse_data_str_to_dict
 from utils.colored_text import colored_input, colored_text
 
 
-@input_error
 def add_contact(book: AddressBook):
     user_first_name = input_validate_field(
         "Enter your first name", length=2, field_type="name"
@@ -45,7 +43,6 @@ def add_contact(book: AddressBook):
     return colored_text("User is saved")
 
 
-@input_error
 def change_contact(book: AddressBook):
     full_name_input = colored_input(
         "Enter contact full name to edit (First Last)"
@@ -138,7 +135,6 @@ def change_contact(book: AddressBook):
             colored_text("Invalid command!", "red")
 
 
-@input_error
 def show_all(book: AddressBook):
     if not book.data:
         return "Your address book is empty!"
@@ -151,7 +147,6 @@ def show_all(book: AddressBook):
     dynamic_table(title="All contacts", rows=contacts_list, style="cyan")
 
 
-@input_error
 def show_up_birthdays(book: AddressBook):
     days_input = colored_input(
         "Enter the number of days to check upcoming birthdays (default is 7)"
@@ -176,8 +171,6 @@ def show_up_birthdays(book: AddressBook):
     dynamic_table(title="Upcoming birthdays", rows=birthday_rows, style="cyan")
 
 
-
-@input_error
 def contact_show(
     book: AddressBook,
 ):
@@ -194,7 +187,7 @@ def contact_show(
     
     dynamic_table(title=f"Contact {full_name_input} details", rows=parse_data_str_to_dict(str(record)), style="cyan")
 
-@input_error
+
 def contact_search(book: AddressBook):
     input_query = colored_input(
         "Enter a search word or date of birth in DD.MM.YYYY format: ", "cyan"
@@ -219,7 +212,6 @@ def contact_search(book: AddressBook):
         style="cyan"
     )
 
-@input_error
 def delete_contact(book: AddressBook):
     full_name_input = colored_input(
         "Enter contact full name to remove from address book (First Last)"
