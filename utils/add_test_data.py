@@ -81,4 +81,4 @@ def add_test_data(book, note):
 
     note.update(notes)
 
-    colored_text("Added 5 test contacts and 5 test notes with partial similarity for search testing.", "green")
+    colored_text("Added 5 test contacts and 5 test notes.", "green")

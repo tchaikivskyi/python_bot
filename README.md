@@ -38,14 +38,21 @@ python main.py
 ```bash
 "contact add" # — додати контакт
 "contact edit" # — редагувати контакт
+"contact show" # — переглянути контакт
 "contact all" # — переглянути всі контакти
-"contact search ..." # — пошук контакту
-"contact show-birthday" # — дні народження найближчим часом
+"contact search" # — пошук контактів
+"contact delete" # — видалення контакту
+"contact birthdays" # — контакти в яких дні народження найближчим часом
 "note add" # — додати нотатку
+"note edit" # — редагувати нотатку
 "note all" # — переглянути всі нотатки
-"note search-by-tag <тег> " # — пошук нотатки за тегом
+"note search" # — пошук нотатків
+"note search-by-tag" # — пошук нотатки за тегом
 "note sort-by-tag" # — сортувати нотатки за тегами
+"note delete" # — видалення нотатку
+"hello" # — просто текст "How can I help you?"
 "help" # — список всіх доступних команд
+"test data" # — додає тестові дані
 "exit / close" # — вихід та збереження даних
 ```
 Збереження даних
